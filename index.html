@@ -697,6 +697,14 @@ body::before {
 .toast.success { border-color: #10b981; }
 .toast.error { border-color: var(--neon-pink); }
 @keyframes toastIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}
+.shake { animation: shake .4s ease; }
 
 .modal-overlay {
   position: fixed; inset: 0; z-index: 2000;
@@ -802,7 +810,7 @@ body::before {
     <div class="search-dropdown" id="searchDropdown"></div>
   </div>
   <div class="nav-right">
-    <button class="btn btn-ghost" onclick="navigate('admin')">⚙ Admin</button>
+    <button class="btn btn-ghost" id="adminNavBtn" onclick="navigate('admin')">🔒 Admin</button>
     <button class="btn btn-primary" onclick="navigate('browse')">Browse All</button>
   </div>
 </nav>
@@ -1125,6 +1133,33 @@ body::before {
 <!-- ════════ TOAST ════════ -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- ════════ LOGIN MODAL ════════ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="font-family:var(--font-title);font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--accent-2),var(--neon-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px">ANIVERSE</div>
+      <div style="color:var(--text-lo);font-size:.82rem;letter-spacing:.5px">ADMIN ACCESS ONLY</div>
+      <div style="width:48px;height:3px;background:linear-gradient(to right,var(--accent),var(--accent-hot));border-radius:2px;margin:10px auto 0"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label class="form-label">👤 Username</label>
+      <input type="text" class="form-input" id="loginUsername" placeholder="Enter username" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('loginPassword').focus()"/>
+    </div>
+    <div class="form-group" style="margin-bottom:6px">
+      <label class="form-label">🔑 Password</label>
+      <div style="position:relative" id="loginPasswordInput">
+        <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" style="width:100%;padding-right:42px" onkeydown="if(event.key==='Enter')adminLogin()"/>
+        <button onclick="togglePwVis()" id="pwToggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-lo);cursor:pointer;font-size:1rem;padding:0">👁</button>
+      </div>
+    </div>
+    <div id="loginError" style="display:none;color:var(--neon-pink);font-size:.82rem;margin-bottom:10px;padding:8px 12px;background:rgba(255,45,120,.1);border:1px solid rgba(255,45,120,.3);border-radius:6px;"></div>
+    <div class="modal-actions" style="margin-top:18px">
+      <button class="btn btn-ghost" onclick="document.getElementById('loginModal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" onclick="adminLogin()">🔓 Login</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════ CONFIRM MODAL ════════ -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal">
@@ -1166,14 +1201,83 @@ let state = {
 };
 
 /* ═══════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════ */
+const ADMIN_USER = 'Admin';
+const ADMIN_PASS = 'alnuraraf@#8249';
+let adminAuthenticated = false;
+
+function isAdminAuth() {
+  return adminAuthenticated || sessionStorage.getItem('av_admin_auth') === '1';
+}
+function setAdminAuth(val) {
+  adminAuthenticated = val;
+  if (val) sessionStorage.setItem('av_admin_auth', '1');
+  else sessionStorage.removeItem('av_admin_auth');
+  updateAdminBtn();
+}
+function updateAdminBtn() {
+  const btn = document.getElementById('adminNavBtn');
+  if (!btn) return;
+  btn.textContent = isAdminAuth() ? '⚙ Admin' : '🔒 Admin';
+}
+function adminLogin() {
+  const u = document.getElementById('loginUsername').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    err.style.display = 'none';
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginModal').classList.remove('open');
+    setAdminAuth(true);
+    _navigateTo('admin');
+  } else {
+    err.style.display = 'block';
+    err.textContent = u !== ADMIN_USER ? 'Invalid username.' : 'Invalid password.';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPasswordInput').classList.add('shake');
+    setTimeout(() => document.getElementById('loginPasswordInput').classList.remove('shake'), 500);
+  }
+}
+function adminLogout() {
+  setAdminAuth(false);
+  navigate('home');
+  toast('Logged out successfully.', 'info');
+}
+
+/* ═══════════════════════════════════════════
    NAVIGATION
 ═══════════════════════════════════════════ */
 function navigate(page) {
+  if (page === 'admin') {
+    if (!isAdminAuth()) {
+      document.getElementById('loginModal').classList.add('open');
+      document.getElementById('loginUsername').focus();
+      return;
+    }
+  }
+  _navigateTo(page);
+}
+function _navigateTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   window.scrollTo(0, 0);
   if (page === 'browse') loadBrowse();
-  if (page === 'admin') loadManageTable();
+  if (page === 'admin') { loadManageTable(); updateLogoutBtn(); }
+}
+function updateLogoutBtn() {
+  const existing = document.getElementById('adminLogoutBtn');
+  if (existing) return;
+  const sidebar = document.querySelector('.admin-sidebar');
+  if (!sidebar) return;
+  const btn = document.createElement('div');
+  btn.id = 'adminLogoutBtn';
+  btn.className = 'admin-nav-item';
+  btn.style.cssText = 'color:var(--neon-pink);margin-top:12px;border-top:1px solid var(--border);padding-top:14px;';
+  btn.innerHTML = '<span>🚪</span> Logout';
+  btn.onclick = adminLogout;
+  sidebar.appendChild(btn);
 }
 function setActive(el) {
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -1889,8 +1993,19 @@ function closeModal() { document.getElementById('confirmModal').classList.remove
 /* ═══════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════ */
+function togglePwVis() {
+  const inp = document.getElementById('loginPassword');
+  const btn = document.getElementById('pwToggle');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+// Close login modal on overlay click
+document.getElementById('loginModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
 initHome();
 updateEmbedPreview();
+updateAdminBtn();
 </script>
 </body>
 </html>
