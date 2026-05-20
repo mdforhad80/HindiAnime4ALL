@@ -787,7 +787,7 @@
             width: 100%;
             height: 100%;
             background: var(--bg);
-            z-index: 9999;
+            z-index: 99999;  /* increased to be on top of everything */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1915,645 +1915,320 @@
             if (!append) { grid.innerHTML =
                 '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Searching...</p>';
                 searchPage = 1; }
-            const res = await searchAnime(query, page, searchFilters page, searchFilters);
-           );
-            if (! if (!append)append) grid.innerHTML grid.innerHTML = '';
- = '';
-            if (res            if (res?.data?.data?.length?.length) {
-) {
-                res.data.forEach                res(a =>.data.forEach(a => grid.appendChild grid.appendChild(create(createAnimeCard(aAnimeCard(a, true, true)));
-               )));
-                loadMore loadMore.style.display = res.pagination.style.display = res.pagination?.has?.has_next_page_next_page ? 'block' : ' ? 'block' : 'none';
-none';
-                search                searchPage = page;
-            }Page = page;
-            } else if else if (!append (!append) {
-                grid) {
+            const res = await searchAnime(query, page, searchFilters);
+            if (!append) grid.innerHTML = '';
+            if (res?.data?.length) {
+                res.data.forEach(a => grid.appendChild(createAnimeCard(a, true)));
+                loadMore.style.display = res.pagination?.has_next_page ? 'block' : 'none';
+                searchPage = page;
+            } else if (!append) {
                 grid.innerHTML =
-                   .innerHTML =
-                    '<p style '<p style="color="color:var(--m:var(--muted);grid-columnuted);grid-column:1:1/-1/-1;text;text-align:-align:center;center;padding:padding:40px;">No40px;">No results found results found</p>';
-</p>';
-                loadMore.style.display =                loadMore.style.display = 'none 'none';
-           ';
+                    '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px;">No results found</p>';
+                loadMore.style.display = 'none';
             }
-            }
-            if (! if (!res?.res?.paginationpagination?.has_next_page?.has_next_page) loadMore.style.display = 'none';
+            if (!res?.pagination?.has_next_page) loadMore.style.display = 'none';
         }
 
-        const deb) loadMore.style.display = 'none';
-        }
-
-        const debouncedLiveouncedLiveSearch =Search = debounce debounce(async ((async (q)q) => {
- => {
-            if            if (q.length <  (q.length < 2)2) { search { searchResultsList.innerHTML =
-ResultsList.innerHTML =
-                               '<p style=" '<p style="color:color:var(--var(--mutedmuted);text-align:center;);text-align:center;padding:padding:2020px;">Type to search...</p>'; return; }
-            searchpx;">Type to search...</p>'; return; }
-            searchResultsListResultsList.innerHTML =
-               .innerHTML =
-                '<p style '<p style="color="color:var:var(--m(--muted);text-alignuted);text-align:center:center;padding;padding:10px;">:10Searchingpx;">Searching...</p...</p>';
-           >';
-            const res const res = await = await searchAn searchAnime(qime(q, 1);
-, 1);
-            searchResultsList            searchResultsList.innerHTML =.innerHTML = '';
-            if ( '';
-            if (res?.res?.data?.data?.length) {
-                res.datalength) {
-                res.data.slice(.slice(00, 10, 10).forEach((a).forEach((a, i, i) =>) => {
-                    const item {
-                    const item = document = document.createElement('.createElement('a');
-                    item.href = `anime.html?ida');
-                    item.href = `anime=${a.mal_id}`;
-                   .html?id=${a.mal_id}`;
-                    item.className = item.className = 'search-result-item';
-                    item.innerHTML 'search-result-item';
+        const debouncedLiveSearch = debounce(async (q) => {
+            if (q.length < 2) { searchResultsList.innerHTML =
+                '<p style="color:var(--muted);text-align:center;padding:20px;">Type to search...</p>'; return; }
+            searchResultsList.innerHTML =
+                '<p style="color:var(--muted);text-align:center;padding:10px;">Searching...</p>';
+            const res = await searchAnime(q, 1);
+            searchResultsList.innerHTML = '';
+            if (res?.data?.length) {
+                res.data.slice(0, 10).forEach((a, i) => {
+                    const item = document.createElement('a');
+                    item.href = `anime.html?id=${a.mal_id}`;
+                    item.className = 'search-result-item';
                     item.innerHTML = `
-                = `
-                <img class="search-result-img" src="${a.images?.jpg <img class="search-result-img" src="${a.images?.jpg?.image?.image_url||_url||''}"''}" alt="" alt="" loading=" loading="lazylazy" on" onerror="error="this.stylethis.style.display='.display='none'none'">
-               ">
-                <div <div class="search-result class="-info"><span class="search-result-info"><span class="title">title">${a.title_${a.title_english||a.title}</span><span class="english||a.title}</span><span class="meta">${ameta">${a.type||.type||''}''} • • ⭐${ ⭐a.score${a.score||'||'?'?'}</span}</span></div>`;
-></div>`;
-                    search                    searchResultsListResultsList.appendChild(item.appendChild(item);
-);
-                               });
-            });
-            } else { } else { searchResults searchResultsList.innerHTML =
-               List.innerHTML =
-                '<p style=" '<p style="color:var(--color:var(--mutedmuted);text-align:);text-align:center;center;padding:padding:20px20px;">No results</;">Nop> results</'; }
-p>'; }
-        },        }, CONFIG CONFIG.DEBOUN.DEBOUNCECE_D_DELAYELAY);
+                <img class="search-result-img" src="${a.images?.jpg?.image_url||''}" alt="" loading="lazy" onerror="this.style.display='none'">
+                <div class="search-result-info"><span class="title">${a.title_english||a.title}</span><span class="meta">${a.type||''} • ⭐${a.score||'?'}</span></div>`;
+                    searchResultsList.appendChild(item);
+                });
+            } else { searchResultsList.innerHTML =
+                '<p style="color:var(--muted);text-align:center;padding:20px;">No results</p>'; }
+        }, CONFIG.DEBOUNCE_DELAY);
 
-       );
-
-        // = // ==================== SCHED=================== SCHULE PAGEEDULE PAGE ================= ====================
-===
-        async function load        asyncSchedulePage function loadSchedulePage() {
-() {
-            const            const grid = grid = $('#sche $('#scheduleGrid');
-            if (!grid)duleGrid');
-            if (! return;
-grid) return;
-            grid.innerHTML =            grid.innerHTML = '<p style=" '<p style="colorcolor::var(--var(--mutedmuted);">);">Loading scheduleLoading schedule...</p...</p>';
-           >';
-            const days const days = [' = ['mondaymonday', '', 'tuesdaytuesday', 'wednesday', '', 'wednesday', 'thursdaythursday', '', 'fridayfriday', '', 'saturdaysaturday', '', 'sundaysunday'];
-           '];
-            const day const dayNames =Names = ['Monday ['Monday', '', 'Tuesday',Tuesday', 'Wednesday 'Wednesday', 'Thursday',', 'Thursday', 'Friday 'Friday', '', 'Saturday', 'SundaySaturday', 'Sunday'];
-           '];
-            const const allS allSchedules =chedules = await Promise await Promise.all(d.all(days.mapays.map(d =>(d => getSchedule getSchedule(d)));
-(d)));
-            grid            grid.innerHTML =.innerHTML = '';
-            '';
-            days.forEach((d days.forEach((d, i, i) =>) => {
-                const data {
-                const data = all = allSchedulesSchedules[i][i]?.?.datadata || [];
- || [];
-                const card =                const card = document.createElement('div');
-                document.createElement('div');
-                card.class card.className =Name = 'schedule-day-card';
-                card.innerHTML = `<h3>📅 ${day 'schedule-day-card';
-                card.innerHTML = `<h3>📅 ${dayNames[i]}</h3Names[i]}</h3>`;
-                if (data>`;
+        // ==================== SCHEDULE PAGE ====================
+        async function loadSchedulePage() {
+            const grid = $('#scheduleGrid');
+            if (!grid) return;
+            grid.innerHTML = '<p style="color:var(--muted);">Loading schedule...</p>';
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            const allSchedules = await Promise.all(days.map(d => getSchedule(d)));
+            grid.innerHTML = '';
+            days.forEach((d, i) => {
+                const data = allSchedules[i]?.data || [];
+                const card = document.createElement('div');
+                card.className = 'schedule-day-card';
+                card.innerHTML = `<h3>📅 ${dayNames[i]}</h3>`;
                 if (data.length === 0) card.innerHTML +=
-                   .length === 0) card.innerHTML +=
-                    '<p style '<p style="color="color:var(--m:var(--muted);uted);font-sizefont-size:0:0.8.8rem;">rem;">No animeNo anime scheduled scheduled</p</p>';
-               >';
-                data.slice data.slice(0(0, , 6).6).forEach(aforEach(a => {
- => {
-                    const row = document.createElement                    const row = document.createElement('div');
-                   ('div');
-                    row.className = row.className = 'sche 'schedule-item';
-                   dule-item';
-                    row.innerHTML row.innerHTML = `
-                = `
-                <img src="${ <imga.images?.jpg?. src="${a.images?.jpg?.image_url||''image_url||''}" alt="" loading="lazy" onerror="this.style.display='none'">
-                <div}" alt="" loading="lazy" onerror="this.style.display='none'">
-                <div><strong><strong style style="font="font-size:0.78rem-size:0.78rem;">${a.title;">${a.title_english_english||a||a.title}</.title}</strongstrong><br><br><span><span style=" style="color:color:var(--mutedvar(--muted);font-size:0.7rem;">${);font-size:0.7rem;">${a.typea.type||''} •||''} • ⭐ ⭐${a${a.score||'?'.score||'?'}</span}</span></div></div>`;
->`;
-                    row                    row.style.cursor.style.cursor = ' = 'pointer';
-pointer';
-                    row.addEventListener('                    row.addEventListener('click',click', () => () => window.location window.location.href =
-                        `anime.href =
-                        `anime.html?id=${a.html?id=${a.mal.mal_id}`);
-_id}`);
-                    card                    card.appendChild(row);
+                    '<p style="color:var(--muted);font-size:0.8rem;">No anime scheduled</p>';
+                data.slice(0, 6).forEach(a => {
+                    const row = document.createElement('div');
+                    row.className = 'schedule-item';
+                    row.innerHTML = `
+                <img src="${a.images?.jpg?.image_url||''}" alt="" loading="lazy" onerror="this.style.display='none'">
+                <div><strong style="font-size:0.78rem;">${a.title_english||a.title}</strong><br><span style="color:var(--muted);font-size:0.7rem;">${a.type||''} • ⭐${a.score||'?'}</span></div>`;
+                    row.style.cursor = 'pointer';
+                    row.addEventListener('click', () => window.location.href =
+                        `anime.html?id=${a.mal_id}`);
+                    card.appendChild(row);
                 });
-               .appendChild(row);
-                });
-                grid.appendChild grid.appendChild(card(card);
-           );
+                grid.appendChild(card);
             });
-        });
         }
 
-        }
+        // ==================== PARTICLES ====================
+        function initParticles() {
+            const canvas = particlesCanvas;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const maxParticles = 50;
 
-        // = // ======================================= PARTIC PARTICLES =LES ======================================
-       =
-        function init function initParticlesParticles() {
-() {
-            const            const canvas = particlesCanvas canvas = particlesCanvas;
-            const ctx;
-            const ctx = canvas = canvas.getContext.getContext('2d');
-('2            letd');
-            let particles = particles = [];
-            [];
-            const max const maxParticlesParticles =  = 50;
+            function resize() { canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
 
-50;
-
-            function            function resize() resize() { canvas.width = window.innerWidth;
-                canvas.height = window { canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight.innerHeight; }
-; }
-            resize            resize();
-           ();
-            window.addEventListener window.addEventListener('res('resize',ize', resize);
-
- resize);
-
-            class            class Particle {
- Particle                constructor {
+            class Particle {
                 constructor() {
-                    this() {
-.reset();
                     this.reset();
                 }
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.5 + 0.1;
                 }
-                reset                reset() {
-                    this() {
-                    this.x =.x = Math.random Math.random() *() * canvas.width canvas.width;
-                   ;
-                    this.y = Math this.y.random() = Math.random() * canvas * canvas.height;
-.height;
-                    this                    this.size =.size = Math.random Math.random() *() * 2 2 + 0.5;
- + 0.5;
-                    this.speedX = (Math.random()                    this.speedX = (Math -.random() -  0.0.5)5) *  * 0.0.4;
-4;
-                    this                    this.speed.speedY =Y = (Math (Math.random().random() -  - 0.0.5)5) * 0.4;
-                    this.opacity = Math.random() * 0.4;
-                    this.opacity = Math.random() * 0. * 0.5 +5 + 0.1 0.1;
-               ;
-                }
-                }
-                update() update() {
-                    this.x {
-                    this.x += this.speed += this.speedX;
-X;
-                    this                    this.y +=.y += this.s this.speedYpeedY;
-                   ;
-                    if (this.x if (this.x <  < 0 || this.x0 || this.x > canvas > canvas.width ||.width || this.y this.y <  < 0 || this.y0 || > canvas this.y > canvas.height).height) this
-                        . this
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this
                         .reset();
-reset();
                 }
-                draw                }
-                draw()() {
-                    {
-                    ctx.begin ctx.beginPath();
-                    ctxPath();
-                    ctx.arc.arc(this.x, this.y, this.size(this.x, this.y, this.size, 0,, 0, Math.P Math.PI *I * 2 2);
-                   );
-                    ctx.fill ctx.fillStyle =Style = `rg `rgba(ba(139,139,92,246,92,${this246,${this.opacity.opacity})`;
-})`;
-                    ctx                    ctx.fill();
-.fill();
-                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(139,92,246,${this.opacity})`;
+                    ctx.fill();
                 }
             }
 
-            while            }
+            while (particles.length < maxParticles) particles.push(new Particle());
 
-            while (part (particles.length < maxicles.length < maxParticlesParticles) particles) particles.push(new.push(new Particle());
-
- Particle());
-
-            function            function animate() animate() {
-                {
-                ctx.clear ctx.clearRect(Rect(0,0, 0 0, canvas, canvas.width,.width, canvas.height canvas.height);
-               );
-                particles.forEach particles.forEach(p =>(p => { p { p.update();
-.update();
-                    p                    p.draw();.draw(); });
-                });
-                requestAnimation requestAnimationFrame(Frame(animateanimate);
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update();
+                    p.draw(); });
+                requestAnimationFrame(animate);
             }
-);
-            }
-            animate            animate();
+            animate();
         }
 
-       ();
-        }
-
-        // = // ======================================= ROUT ROUTING ===================ING ====================
-       =
-        function handle function handleRoute() {
-           Route() {
-            const path const path = location = location.pathname.pathname.split('/.split('/').pop').pop()() || ' || 'index.htmlindex.html';
-           ';
-            const id const id = = getParam('id getParam('id');
-           ');
-            const ep const ep = get = getParam('Param('ep');
-ep');
-            const type =            const type = getParam getParam('type('type') ||') || 'sub 'sub';
-            const q = getParam('';
+        // ==================== ROUTING ====================
+        function handleRoute() {
+            const path = location.pathname.split('/').pop() || 'index.html';
+            const id = getParam('id');
+            const ep = getParam('ep');
+            const type = getParam('type') || 'sub';
             const q = getParam('q');
 
-           q');
-
-            if (path if (path === === 'an 'anime.htmlime.html' &&' && id) id) {
-                {
-                loadAnimeDetail loadAnimeDetail(id);
-(id);
-            }            } else if else if (path (path === 'watch.html === 'watch.html' &&' && id && id && ep) ep) {
-                {
-                loadWatch loadWatchPage(idPage(id, ep, type, ep, type);
-           );
-            } else } else if ( if (path ===path === 'search 'search.html') {
-               .html') {
-                showPage showPage('page('page-search');
--search');
-                if                if (q (q) {
-                    $('#) {
-                    $('#searchPagesearchPageInput').Input').value =value = q;
- q;
-                    search                    searchQuery =Query = q;
-                    perform q;
-                    performSearch(qSearch(q, 1);
+            if (path === 'anime.html' && id) {
+                loadAnimeDetail(id);
+            } else if (path === 'watch.html' && id && ep) {
+                loadWatchPage(id, ep, type);
+            } else if (path === 'search.html') {
+                showPage('page-search');
+                if (q) {
+                    $('#searchPageInput').value = q;
+                    searchQuery = q;
+                    performSearch(q, 1);
                 }
-, 1);
-                }
-            }            } else if else if (path === ' (path === 'scheduleschedule.html').html') {
-                {
-                showPage showPage('page('page-schedule-schedule');
-               ');
-                loadSchedule loadSchedulePage();
-Page();
-            }            } else if else if (path (path === ' === 'creator.htmlcreator.html') {
-                show') {
-                showPage('Page('page-creator');
-page-creator');
-            }            } else {
-                show else {
-                showPage('Page('page-home');
-               page-home');
+            } else if (path === 'schedule.html') {
+                showPage('page-schedule');
+                loadSchedulePage();
+            } else if (path === 'creator.html') {
+                showPage('page-creator');
+            } else {
+                showPage('page-home');
                 loadHomePage();
- loadHomePage();
-                init                initHeroSliderHeroSlider();
-           ();
+                initHeroSlider();
             }
-        }
-
-        function showPage(pageId) }
         }
 
         function showPage(pageId) {
-            $$('.page-content {
-            $$('.page-content').forEach(p =>').forEach p.classList.remove('(p => p.classList.remove('active'));
-            constactive'));
-            const page = $ page = $('#'('#' + pageId);
- + pageId);
-            if (page            if (page) page.classList.add) page.classList.add('active('active');
-            //');
-            // Update sidebar Update sidebar active
- active
-            $$            $$('.sidebar('.sidebar-link').-link').forEach(lforEach(l => l => l.classList.remove.classList.remove('active('active'));
-            const link'));
-            const linkMapMap = { 'page = { 'page-home':-home': 'home 'home', '', 'page-searchpage-search': 'search', 'page': 'search', 'page-schedule-schedule': '': 'scheduleschedule',
-                'page',
-                'page-creator-creator': 'creator'': 'creator' };
-            };
- const target            = link const target = linkMapMap[pageId];
-           [pageId];
-            if ( if (target) {
-               target) {
-                const link const link = $( = $(`.sidebar`.sidebar-link-link[data-page[data-page="${target="${target}"]}"]`);
-                if (link) link.classList`);
-                if (link) link.classList.add('.add('active');
-active');
+            $$('.page-content').forEach(p => p.classList.remove('active'));
+            const page = $('#' + pageId);
+            if (page) page.classList.add('active');
+            // Update sidebar active
+            $$('.sidebar-link').forEach(l => l.classList.remove('active'));
+            const linkMap = { 'page-home': 'home', 'page-search': 'search', 'page-schedule': 'schedule',
+                'page-creator': 'creator' };
+            const target = linkMap[pageId];
+            if (target) {
+                const link = $(`.sidebar-link[data-page="${target}"]`);
+                if (link) link.classList.add('active');
             }
-            }
-            window.scroll            window.scrollTo(0,To( 00, 0);
-       );
+            window.scrollTo(0, 0);
         }
 
-        }
-
-        // = // ======================================= EVENT LISTENERS EVENT LISTENERS ================= ====================
-===
-        //        // Menu toggle Menu toggle
-        $('#menu
-        $('#menuToggle').Toggle').addEventListeneraddEventListener('click('click', () => {
-', () => {
-            sidebar            sidebar.classList.add('active.classList.add');
-            sidebarOver('active');
-           lay.classList sidebarOverlay.classList.add('.add('active');
-active');
+        // ==================== EVENT LISTENERS ====================
+        // Menu toggle
+        $('#menuToggle').addEventListener('click', () => {
+            sidebar.classList.add('active');
+            sidebarOverlay.classList.add('active');
         });
-        });
-        $('#sidebarClose        $('#sidebarClose').add').addEventListener('EventListener('click', closeSideclick', closeSidebar);
-bar);
-        sidebar        sidebarOverlayOverlay.addEventListener('.addEventListener('click',click', closeSide closeSidebar);
+        $('#sidebarClose').addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
 
-bar);
-
-        function closeSide        functionbar() {
-            closeSidebar() sidebar.classList.remove(' {
+        function closeSidebar() {
             sidebar.classList.remove('active');
-active');
-            sidebarOverlay            sidebarOverlay.classList.remove.classList.remove('active('active');
-       ');
+            sidebarOverlay.classList.remove('active');
         }
 
-        }
-
-        // Search // Search toggle
-        $('# toggle
-searchToggle        $('#searchToggle').addEventListener('').addclick',EventListener('click', () => () => {
-            {
-            searchOver searchOverlay.classList.add('lay.classList.add('active');
-active');
-            search            searchInput.focus();
-Input.focus();
-               });
-        $('#searchClose'). });
-        $('#searchClose').addEventListeneraddEventListener('click('click', ()', () => {
- => {
-            search            searchOverlayOverlay.classList.remove('active.classList.remove('active');
-           ');
-            searchInput searchInput.value =.value = '';
-            '';
-            searchResults searchResultsList.innerHTMLList.innerHTML =
- =
-                       '<p '<p style=" style="color:color:var(--mutedvar(--);textmuted);text-align:-align:center;center;padding:20px;">Type to searchpadding:20px;">Type to search...</p>';
-       ...</p });
-       >';
+        // Search toggle
+        $('#searchToggle').addEventListener('click', () => {
+            searchOverlay.classList.add('active');
+            searchInput.focus();
         });
-        searchInput searchInput.addEventListener('input.addEventListener('input', () =>', () => debouncedLiveSearch(searchInput.value));
- debouncedLiveSearch(searchInput.value));
-        search        searchInputInput.addEventListener('.addEventListener('keydownkeydown', (', (e)e) => {
-            if => {
- (e            if.key === (e.key === 'E 'Escape')scape') {
- {
-                search                searchOverlayOverlay.classList.remove.classList.remove('active');
-               ('active searchInput');
-                searchInput.value =.value = '';
-            '';
+        $('#searchClose').addEventListener('click', () => {
+            searchOverlay.classList.remove('active');
+            searchInput.value = '';
+            searchResultsList.innerHTML =
+            '<p style="color:var(--muted);text-align:center;padding:20px;">Type to search...</p>';
+        });
+        searchInput.addEventListener('input', () => debouncedLiveSearch(searchInput.value));
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchOverlay.classList.remove('active');
+                searchInput.value = '';
             }
-        }
         });
 
-        });
-
-        // Side // Sidebar linksbar links
-        $$('.
-        $$('.sidebar-linksidebar-link[data[data-page]-page]').forEach').forEach(link(link => {
- => {
-            link            link.addEventListener('.addEventListener('click',click', (e (e) => {
-               ) => e.preventDefault {
-               ();
-                const e.preventDefault();
-                const page page = link = link.dataset.dataset.page;
-.page;
-                close                closeSidebar();
-               Sidebar();
-                if (page === if (page === 'home 'home') window') window.location.h.location.href = 'index.html';
-ref = 'index.html';
-                else                else if (page === if (page === 'search 'search') window.location.href = 'search') window.location.href = 'search.html';
-                else.html';
-                else if ( if (page ===page === 'sche 'schedule')dule') window.location window.location.href.href = ' = 'scheduleschedule.html';
-.html';
-                else if (                else if (page === 'creator') window.location.href = 'creator.html';
-            });
-page === 'creator') window.location.href = 'creator.html';
-        });
+        // Sidebar links
+        $$('.sidebar-link[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                closeSidebar();
+                if (page === 'home') window.location.href = 'index.html';
+                else if (page === 'search') window.location.href = 'search.html';
+                else if (page === 'schedule') window.location.href = 'schedule.html';
+                else if (page === 'creator') window.location.href = 'creator.html';
             });
         });
-        $('#sidebarContinue        $('#WatchingsidebarContinue')?.Watching')?.addEventListener('click', ()addEventListener('click', () => {
- => {
-            close            closeSidebar();
-            window.location.href = 'index.html';
-            setTimeout(() => $('#continueWSidebar();
-            window.location.href = 'index.html';
-            setTimeout(() => $('#continueWatchingSectionatchingSection')?.')?.scrollIntoscrollIntoView({View({ behavior: behavior: 's 'smooth'mooth' }), }), 300);
-        300);
-        });
-        });
-        $('#sidebar $('#sidebarHistory')?.addHistory')EventListener('?.addEventListener('click',click', () => () => {
-            {
+        $('#sidebarContinueWatching')?.addEventListener('click', () => {
             closeSidebar();
-            window.location.href = ' closeSidebar();
-            window.location.href = 'indexindex.html';
-.html';
-            setTimeout            setTimeout(() =>(() => $('#watch $('#watchHistorySectionHistorySection')?.scrollInto')?.scrollIntoView({View({ behavior: behavior: 's 'smooth'mooth' }), }), 300 300);
-       );
+            window.location.href = 'index.html';
+            setTimeout(() => $('#continueWatchingSection')?.scrollIntoView({ behavior: 'smooth' }), 300);
+        });
+        $('#sidebarHistory')?.addEventListener('click', () => {
+            closeSidebar();
+            window.location.href = 'index.html';
+            setTimeout(() => $('#watchHistorySection')?.scrollIntoView({ behavior: 'smooth' }), 300);
         });
 
-        });
+        // Clear history
+        $('#clearHistoryBtn')?.addEventListener('click', () => { clearWatchHistory();
+            loadWatchHistory(); });
 
-        // Clear // Clear history
- history
-        $('#        $('#clearHistoryclearHistoryBtn')Btn')?.addEventListener('?.addclick',EventListener('click', () => { clear () => { clearWatchHistoryWatchHistory();
-           ();
-            loadWatch loadWatchHistory(); });
-
-       History(); });
-
-        // Search // Search page
-        $('#searchPage page
-        $('#searchPageInput')Input')?.addEventListener('input', debounce(function() {
-            search?.addEventListener('input', debounce(function() {
-            searchQuery =Query = this.value;
-            this.value if (;
-            if (searchQuerysearchQuery.length >=.length >= 2) perform 2) performSearch(searchSearch(searchQuery,Query, 1 1);
-       );
-        }, CON }, CONFIG.DFIG.DEBOEBOUNCE_DELAY));
-UNCE_DELAY));
-        $('#        $('#loadMoreloadMoreBtn')Btn')?.addEventListener('?.addEventListener('click',click', () => () => {
-            {
-            if ( if (searchQuerysearchQuery.length.length >=  >= 2)2) performSearch(searchQuery performSearch(searchQuery, search, searchPage +Page + 1 1, true, true);
-       );
+        // Search page
+        $('#searchPageInput')?.addEventListener('input', debounce(function() {
+            searchQuery = this.value;
+            if (searchQuery.length >= 2) performSearch(searchQuery, 1);
+        }, CONFIG.DEBOUNCE_DELAY));
+        $('#loadMoreBtn')?.addEventListener('click', () => {
+            if (searchQuery.length >= 2) performSearch(searchQuery, searchPage + 1, true);
         });
-        });
-        [' ['##filterTypefilterType', '#', '#filterStatus'].filterStatus'].forEach(sel =>forEach(sel => {
-            {
-            $(sel $(sel)?.addEventListener)?.addEventListener('change('change', function', function() {
-() {
-                searchFilters.type                search = $('#Filters.typefilterType = $('#filterType')')?.?.value ||value || '';
-                '';
-                searchFilters searchFilters.status =.status = $('#filterStatus') $('#filterStatus')?.value?.value || '';
-                if || '';
- (searchQuery.length >=                 if (searchQuery.length >= 2)2) performSearch performSearch(searchQuery(searchQuery, , 1);
-1);
-            });
+        ['#filterType', '#filterStatus'].forEach(sel => {
+            $(sel)?.addEventListener('change', function() {
+                searchFilters.type = $('#filterType')?.value || '';
+                searchFilters.status = $('#filterStatus')?.value || '';
+                if (searchQuery.length >= 2) performSearch(searchQuery, 1);
             });
         });
 
+        // Cursor glow
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
         });
 
-        //        // Cursor Cursor glow
-        document glow
-        document.addEventListener('.addEventListener('mousmousemoveemove', (e)', (e) => {
- => {
-            cursor            cursorGlowGlow.style.left.style.left = e = e.clientX + '.clientX + 'px';
-px';
-            cursor            cursorGlowGlow.style.top.style.top = e = e.clientY.clientY + ' + 'px';
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 20);
         });
 
-px';
-        });
-
-        //        // Navbar Navbar scroll effect scroll effect
-       
-        window.addEventListener('scroll window.addEventListener('scroll', ()', () => {
- => {
-            navbar            navbar.classList.toggle('.classList.toggle('scrolled', windowscrolled', window.scroll.scrollY >Y > 20 20);
-       );
-        });
-
-        });
-
-        // Keyboard // Keyboard shortcuts
-        document shortcuts
-        document.addEventListener('.addEventListener('keydownkeydown',', ( (e) => {
-e) =>            if {
-            if (e (e.key.key === '/' === '/' && ! && !['['INPUT',INPUT', 'T 'TEXTAREXTAREA'].EA'].includes(documentincludes(document.activeElement.activeElement?.tag?.tagName))Name)) {
-                {
-                e.preventDefault e.preventDefault();
-                searchOver();
-                searchOverlay.classListlay.classList.add('.add('active');
-active');
-                search                searchInput.fInput.focus();
-ocus();
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+                e.preventDefault();
+                searchOverlay.classList.add('active');
+                searchInput.focus();
             }
+            if (e.key === 'Escape') {
+                searchOverlay.classList.remove('active');
+                closeSidebar();
             }
-            if            if (e (e.key ===.key === 'E 'Escape') {
-               scape') {
-                searchOver searchOverlay.classListlay.classList.remove('.remove('active');
-active');
-                close                closeSidebarSidebar();
-           ();
-            }
-            }
-            if ( if (e.keye.key === ' === 'f'f' && ![' && !['INPUT',INPUT', 'TEXTAR 'TEXTAREA'].includes(documentEA'].includes(document.activeElement?.tag.activeElement?.tagName))Name)) {
-                const if {
-                const iframe =rame = $('#player $('#playerIframeIframe');
-               ');
-                if ( if (iframe &&iframe && document.contains document.contains((iframe))iframe)) {
-                    {
-                    e.preventDefault e.preventDefault();
-                   ();
-                    iframe iframe.requestFullscreen?..requestFullscreen?.();
-               ();
+            if (e.key === 'f' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+                const iframe = $('#playerIframe');
+                if (iframe && document.contains(iframe)) {
+                    e.preventDefault();
+                    iframe.requestFullscreen?.();
                 }
             }
+        });
+
+        // ==================== INITIALIZATION ====================
+        function hideLoadingScreen() {
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => { if (loadingScreen) loadingScreen.remove(); }, 500);
             }
         }
-        });
 
-        });
+        // Backup: always hide loading screen after 4 seconds (fail‑safe)
+        setTimeout(hideLoadingScreen, 4000);
 
-        // = // ======================================= INITIAL INITIALIZATION =IZATION ======================================
-        async=
         async function init() {
- function init() {
-            initParticles();
-            initParticles();
-            handleRoute();
-
-            handleRoute();
-
-            // Hide loading            // Hide loading screen
- screen
-            setTimeout            setTimeout(() =>(() => {
-                {
-                loadingScreen loadingScreen.classList.add.classList.add('hidden('hidden');
-               ');
-                setTimeout(() setTimeout(() => loadingScreen.remove => loadingScreen.remove(), (), 500);
-500);
-            },            }, 800 800);
-
-           );
-
-            // If // If home page home page, load, load data
- data
-            if (!getParam('            if (!getParam('id') && !location.pathid') && !location.pathname.includes('anime.html') && !locationname.includes('anime.html') && !location.pathname.includes(
-.pathname.includes(
-                    'watch.html') &&
-                !location.pathname.includes('search.html') && !                    'watch.html') &&
-                !location.pathname.includes('search.html') && !location.pathname.includes('schedule.htmllocation.pathname.includes('schedule.html') &&') && !
-                !
-                location.path location.pathname.includes('creator.html'))name.includes('creator.html')) {
-                {
-                loadHomePage();
- loadHomePage();
-                initHeroSlider                initHeroSlider();
-           ();
+            try {
+                initParticles();
+                handleRoute();
+                // If home page, load data (handleRoute already calls loadHomePage for index)
+            } catch (error) {
+                console.error('Initialization error:', error);
+            } finally {
+                // Hide loading screen after init (even if errors occurred)
+                hideLoadingScreen();
             }
         }
 
-        // Handle }
-        }
+        // Handle popstate for SPA-like navigation
+        window.addEventListener('popstate', handleRoute);
 
-        // Handle popstate popstate for S for SPA-likePA-like navigation
-        window navigation
-        window.addEventListener('.addEventListener('popstate', handlepopstate', handleRoute);
-
-        //Route);
-
-        // Start app
-        Start app
-        document.addEventListener('DOM document.addEventListener('DOMContentLoadedContentLoaded', init', init);
-
-        // Service);
+        // Start app when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
 
         // Service Worker registration
-        Worker registration
-        if (' if ('serviceWorker' in navigatorserviceWorker' in navigator && location.protocol === 'https && location.protocol === 'https:') {
-           :') {
-            navigator navigator.serviceWorker.serviceWorker.register('/.register('/sw.jssw.js').catch').catch(() =>(() => {});
- {});
-        }
-
-        }
-
-        console        console.log('.log('🎬🎬 AnimeStream initialized successfully AnimeStream initialized successfully!');
-!');
-        console        console.log('.log('📡📡 Using Jikan Using Jikan API v4 | API v4 | 🎯 🎯 Streaming Streaming via via megaplay megaplay.buzz.buzz');
-       ');
-        console.log console.log('💡 Press('💡 Press "/" "/" to search to search | Press | Press "f "f" for" for fullscreen while fullscreen while watching');
- watching');
-    </    </script>
-
-    <!--script>
-
-    <!-- Service Worker Service Worker inline registration inline registration fallback fallback -->
- -->
-       <script>
- <script>
-        if        if ('service ('serviceWorker'Worker' in navigator && location.protocol === in navigator && location.protocol === 'https 'https::')') {
- {
-                       const swCode = `
- const swCode = `
-            const CACHE_NAME = 'animestream-v1            const CACHE_NAME = 'animestream-v1';
-           ';
-            const ur const urlsTolsToCache = ['/','/index.htmlCache = ['/','/index.html','/','/animeanime.html','/watch.html','/search.html','/schedule.html.html','/watch.html','/search.html','/schedule.html','/','/creator.html'];
-            self.addEventListenercreator.html'];
-            self.addEventListener('install',e=>{e.waitUntil(c('install',e=>{e.waitUntil(caches.openaches.open(CACHE(CACHE_NAME).then(c_NAME).then(c=>c=>c.addAll.addAll(urls(urlsToCacheToCache)));)));});
-           });
-            self.addEventListener self.addEventListener('fetch('fetch',e',e=>{=>{e.respondWithe.respondWith(caches.match(e(caches.match(e.request)..request).then(rthen(r=>r=>r||fetch||fetch(e.request(e.request).).then(resthen(res=>=>{if{if(res.ok(res.ok){const){const clone= clone=res.clone();cres.clone();caches.openaches.open(CACHE(CACHE_NAME)._NAME).then(cthen(c=>c=>c.put(e.put(e.request,.request,clone));clone));}return}return res;})));});
-          res;})));});
+        if ('serviceWorker' in navigator && location.protocol === 'https:') {
+            const swCode = `
+            const CACHE_NAME = 'animestream-v1';
+            const urlsToCache = ['/','/index.html','/anime.html','/watch.html','/search.html','/schedule.html','/creator.html'];
+            self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(urlsToCache)));});
+            self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,clone));}return res;})));});
           `;
- `;
-            const            const blob blob = new = new Blob Blob([sw([swCode],Code], { type { type: ': 'application/javascriptapplication/javascript' });
-' });
-            navig            navigator.serviceator.serviceWorker.registerWorker.register(URL(URL.createObjectURL(.createObjectURL(blobblob)).catch)).catch(() =>(() => {});
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
         }
- {});
-        }
-    </    </script>
-script>
-</body</body>
-</html>
->
+
+        console.log('🎬 AnimeStream initialized successfully!');
+        console.log('📡 Using Jikan API v4 | 🎯 Streaming via megaplay.buzz');
+        console.log('💡 Press "/" to search | Press "f" for fullscreen while watching');
+    </script>
+</body>
 </html>
