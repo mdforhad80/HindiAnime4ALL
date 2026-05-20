@@ -3,127 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AetherAnime - Watching</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="description" content="AnimeStream - Watch Anime Online">
+    <meta property="og:title" content="AnimeStream - Watch Anime">
+    <meta property="og:description" content="Stream your favorite anime episodes in Sub or Dub.">
+    <title>AnimeStream - Watch</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
     <style>
-        body { background: #0b0b0f; color: white; }
-        iframe { border: none; }
-        .glass { background: rgba(18,18,24,0.9); backdrop-filter: blur(12px); }
+        :root {
+            --bg: #0b0b0f; --bg-secondary: #121218; --bg-tertiary: #1a1a24;
+            --purple: #8b5cf6; --purple-dark: #7c3aed; --purple-glow: rgba(139,92,246,0.4);
+            --pink: #d946ef; --text: #f3f4f6; --muted: #9ca3af;
+            --border: rgba(255,255,255,0.08); --glass: rgba(18,18,24,0.75);
+            --card-radius: 16px; --transition-fast: 0.2s ease;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+        .navbar {
+            position: sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between;
+            height:60px; padding:0 16px; background:var(--glass); backdrop-filter:blur(20px); border-bottom:1px solid var(--border);
+        }
+        .navbar-left,.navbar-right{ display:flex; align-items:center; gap:8px; }
+        .navbar-center{ flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,var(--purple),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .icon-btn{ width:40px; height:40px; border-radius:50%; background:transparent; border:none; color:var(--text); font-size:1.2rem; cursor:pointer; }
+        .video-container { width:100%; background:#000; }
+        .video-container iframe { width:100%; aspect-ratio:16/9; border:none; }
+        .controls-panel { padding:12px 16px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--bg-secondary); border-bottom:1px solid var(--border); }
+        .server-btn, .ep-btn {
+            padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--bg-tertiary); color:var(--text);
+            cursor:pointer; font-size:0.8rem; transition:all var(--transition-fast);
+        }
+        .server-btn.active, .ep-btn.active { background:var(--purple); border-color:var(--purple); }
+        .episode-grid { display:flex; flex-wrap:wrap; gap:6px; padding:12px; max-height:300px; overflow-y:auto; }
+        .btn { padding:10px 20px; border-radius:24px; font-weight:600; border:none; cursor:pointer; }
+        .btn-primary { background:var(--purple); color:#fff; }
+        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(120px); background:var(--bg-tertiary); padding:10px 20px; border-radius:24px; z-index:2000; font-size:0.85rem; transition:transform var(--transition-fast); }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .hidden { display:none!important; }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="max-w-screen-2xl mx-auto">
-        <!-- Player Container -->
-        <div class="relative">
-            <iframe id="player" class="w-full aspect-video bg-black" allowfullscreen></iframe>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 py-8">
-            <!-- Episode Info + Controls -->
-            <div class="lg:col-span-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 id="anime-title" class="text-3xl font-bold"></h1>
-                        <p id="current-ep" class="text-purple-400 text-xl"></p>
-                    </div>
-                    
-                    <div class="flex gap-3">
-                        <button onclick="prevEpisode()" class="glass px-6 py-3 rounded-2xl"><i class="fas fa-step-backward"></i></button>
-                        <button onclick="nextEpisode()" class="glass px-6 py-3 rounded-2xl"><i class="fas fa-step-forward"></i></button>
-                    </div>
-                </div>
-
-                <!-- Server & Type -->
-                <div class="glass rounded-3xl p-6 mb-8">
-                    <div class="flex gap-4">
-                        <button onclick="switchType('sub')" id="sub-btn"
-                                class="flex-1 py-4 rounded-2xl font-bold bg-purple-600">SUB</button>
-                        <button onclick="switchType('dub')" id="dub-btn"
-                                class="flex-1 py-4 rounded-2xl font-bold border border-white/30">DUB</button>
-                    </div>
-                </div>
-
-                <!-- Episode List -->
-                <div class="mt-10">
-                    <h3 class="font-semibold mb-4">Episodes</h3>
-                    <div id="episode-list" class="max-h-96 overflow-y-auto grid grid-cols-6 gap-3 pr-4"></div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="lg:col-span-4">
-                <div class="glass rounded-3xl p-6">
-                    <h3 class="text-lg font-semibold mb-4">Related Anime</h3>
-                    <div id="related-sidebar" class="space-y-6"></div>
-                </div>
-            </div>
-        </div>
+<body>
+    <header class="navbar">
+        <div class="navbar-left"><a href="index.html" class="icon-btn" style="text-decoration:none;">🏠</a></div>
+        <div class="navbar-center" id="animeTitleNav">AnimeStream</div>
+        <div class="navbar-right"><button class="icon-btn" id="theaterToggle">🖥️</button></div>
+    </header>
+    <div class="video-container" id="videoContainer">
+        <iframe id="videoIframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
     </div>
-
+    <div class="controls-panel">
+        <select id="serverSelect" class="server-btn">
+            <option value="sub">Sub (VidCloud)</option>
+            <option value="dub">Dub (VidCloud)</option>
+        </select>
+        <button class="btn btn-primary" id="prevEpBtn">◀ Prev</button>
+        <button class="btn btn-primary" id="nextEpBtn">Next ▶</button>
+        <span id="episodeIndicator" style="color:var(--muted); font-size:0.85rem;"></span>
+    </div>
+    <div class="episode-grid" id="episodeGrid"></div>
+    <div class="toast" id="toast"></div>
     <script>
-        const params = new URLSearchParams(location.search);
-        let malId = params.get('id');
+        const CONFIG = {
+            STREAM_BASE: 'https://megaplay.buzz/stream/mal',
+            JIKAN_BASE: 'https://api.jikan.moe/v4',
+        };
+        const Storage = {
+            get(key, fallback) { try { return JSON.parse(localStorage.getItem('as_'+key)) || fallback; } catch { return fallback; } },
+            set(key, val) { try { localStorage.setItem('as_'+key, JSON.stringify(val)); } catch {} },
+            updateContinueWatching(item) {
+                let cw = this.get('continueWatching', []);
+                cw = cw.filter(c=>c.mal_id!==item.mal_id);
+                cw.unshift({...item, updated:Date.now()});
+                if(cw.length>20) cw=cw.slice(0,20);
+                this.set('continueWatching', cw);
+            },
+        };
+        const params = new URLSearchParams(window.location.search);
+        const MAL_ID = params.get('id');
         let currentEp = parseInt(params.get('ep')) || 1;
         let currentType = params.get('type') || 'sub';
+        let totalEpisodes = 0;
+        let animeTitle = '';
 
-        async function loadWatchPage() {
-            const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}`);
-            const json = await res.json();
-            const anime = json.data;
-
-            document.getElementById('anime-title').textContent = anime.title_english || anime.title;
-            updatePlayer();
-            generateEpisodeList(anime.episodes || 24);
-        }
-
-        function updatePlayer() {
-            const streamUrl = `https://megaplay.buzz/stream/mal/${malId}/${currentEp}/${currentType}`;
-            document.getElementById('player').src = streamUrl;
-            
-            document.getElementById('current-ep').textContent = `Episode ${currentEp} • ${currentType.toUpperCase()}`;
-            
-            // Highlight active buttons
-            document.getElementById('sub-btn').classList.toggle('bg-purple-600', currentType === 'sub');
-            document.getElementById('dub-btn').classList.toggle('bg-purple-600', currentType === 'dub');
-        }
-
-        function switchType(type) {
-            currentType = type;
-            updatePlayer();
-        }
-
-        function nextEpisode() {
-            currentEp++;
-            updatePlayer();
-        }
-
-        function prevEpisode() {
-            if (currentEp > 1) {
-                currentEp--;
-                updatePlayer();
+        function updateIframe() {
+            const url = `${CONFIG.STREAM_BASE}/${MAL_ID}/${currentEp}/${currentType}`;
+            document.getElementById('videoIframe').src = url;
+            document.getElementById('episodeIndicator').textContent = `Episode ${currentEp}`;
+            document.getElementById('serverSelect').value = currentType;
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`.ep-btn[data-ep="${currentEp}"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+            if(MAL_ID && animeTitle) {
+                Storage.updateContinueWatching({ mal_id: MAL_ID, title: animeTitle, episode: currentEp, type: currentType, totalEpisodes });
             }
         }
 
-        function generateEpisodeList(total) {
-            const container = document.getElementById('episode-list');
-            container.innerHTML = '';
-            
-            for (let i = 1; i <= Math.min(total, 48); i++) {
-                const active = i === currentEp ? 'ring-2 ring-purple-500' : '';
-                const div = document.createElement('div');
-                div.className = `aspect-square glass rounded-2xl flex items-center justify-center text-xl font-bold cursor-pointer hover:scale-105 transition ${active}`;
-                div.textContent = i;
-                div.onclick = () => {
-                    currentEp = i;
-                    updatePlayer();
-                    generateEpisodeList(total);
-                };
-                container.appendChild(div);
-            }
+        async function loadAnimeInfo() {
+            if(!MAL_ID) return;
+            try {
+                const res = await fetch(`${CONFIG.JIKAN_BASE}/anime/${MAL_ID}/full`);
+                const data = await res.json();
+                animeTitle = data.data.title_english || data.data.title;
+                document.getElementById('animeTitleNav').textContent = animeTitle;
+                totalEpisodes = data.data.episodes || 0;
+                generateEpisodeButtons();
+                updateIframe();
+            } catch(e) { console.error(e); }
         }
 
-        window.onload = loadWatchPage;
+        function generateEpisodeButtons() {
+            const grid = document.getElementById('episodeGrid');
+            const count = totalEpisodes > 0 ? totalEpisodes : 24; // fallback
+            grid.innerHTML = Array.from({length: count}, (_, i) => {
+                const ep = i+1;
+                return `<button class="ep-btn" data-ep="${ep}" onclick="changeEpisode(${ep})">${ep}</button>`;
+            }).join('');
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            const active = document.querySelector(`.ep-btn[data-ep="${currentEp}"]`);
+            if(active) active.classList.add('active');
+        }
+
+        function changeEpisode(ep) {
+            currentEp = ep;
+            updateIframe();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.getElementById('serverSelect').addEventListener('change', (e) => {
+            currentType = e.target.value;
+            updateIframe();
+        });
+        document.getElementById('prevEpBtn').addEventListener('click', ()=>{
+            if(currentEp > 1) changeEpisode(currentEp - 1);
+        });
+        document.getElementById('nextEpBtn').addEventListener('click', ()=>{
+            const max = totalEpisodes || 9999;
+            if(currentEp < max) changeEpisode(currentEp + 1);
+        });
+        document.getElementById('theaterToggle').addEventListener('click', ()=>{
+            if(!document.fullscreenElement) {
+                document.getElementById('videoContainer').requestFullscreen().catch(()=>{});
+            } else {
+                document.exitFullscreen();
+            }
+        });
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'f' || e.key === 'F') document.getElementById('theaterToggle').click();
+            if(e.key === 'ArrowRight' && !e.ctrlKey) document.getElementById('nextEpBtn').click();
+            if(e.key === 'ArrowLeft' && !e.ctrlKey) document.getElementById('prevEpBtn').click();
+        });
+
+        loadAnimeInfo();
     </script>
 </body>
 </html>
