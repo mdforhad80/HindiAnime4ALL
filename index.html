@@ -3,369 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="AnimeStream – Premium anime streaming. Watch subbed & dubbed anime online.">
-  <meta property="og:title" content="AnimeStream – Premium Anime Streaming">
-  <meta property="og:description" content="Watch anime online with premium quality. Subbed and dubbed anime available.">
-  <meta property="og:image" content="https://anitrendz.net/news/wp-content/uploads/2024/01/og-image.jpg">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="description" content="AnimeStream – Premium anime streaming.">
+  <meta property="og:title" content="AnimeStream">
   <meta name="theme-color" content="#8b5cf6">
-  <title>AnimeStream – Watch Anime Online</title>
-  <link rel="manifest" href="manifest.json">
+  <title>AnimeStream</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
   <style>
     :root {
-      --bg: #0b0b0f;
-      --bg-secondary: #121218;
-      --bg-card: #1a1a24;
-      --bg-card-hover: #1f1f2c;
-      --purple: #8b5cf6;
-      --purple-dark: #6d28d9;
-      --purple-light: #a78bfa;
-      --pink: #d946ef;
-      --pink-dark: #c026d3;
-      --text: #f3f4f6;
-      --text-secondary: #d1d5db;
-      --muted: #9ca3af;
-      --border: #2a2a35;
-      --glass: rgba(18, 18, 24, 0.7);
-      --glass-border: rgba(139, 92, 246, 0.2);
-      --glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
-      --glow-pink: 0 0 20px rgba(217, 70, 239, 0.3);
-      --radius-sm: 8px;
-      --radius: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 20px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --navbar-height: auto;
+      --bg: #0b0b0f; --bg-secondary: #121218; --bg-card: #1a1a24;
+      --purple: #8b5cf6; --purple-dark: #6d28d9; --purple-light: #a78bfa;
+      --pink: #d946ef; --text: #f3f4f6; --text-secondary: #d1d5db; --muted: #9ca3af;
+      --border: #2a2a35; --glass: rgba(18,18,24,0.7); --glass-border: rgba(139,92,246,0.2);
+      --glow-purple: 0 0 20px rgba(139,92,246,0.3); --radius: 12px; --transition: 0.3s ease;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body {
-      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    .cursor-glow {
-      position: fixed; pointer-events: none; width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(217, 70, 239, 0.03) 30%, transparent 70%);
-      border-radius: 50%; transform: translate(-50%, -50%); z-index: 9999; transition: opacity 0.3s;
-    }
-    .particles-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .particle { position: absolute; border-radius: 50%; animation: floatParticle linear infinite; opacity: 0; }
-    @keyframes floatParticle {
-      0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
-      10% { opacity: 0.7; }
-      90% { opacity: 0.3; }
-      100% { transform: translateY(-10vh) translateX(80px) scale(1.5); opacity: 0; }
-    }
-    .loading-screen {
-      position: fixed; inset: 0; background: var(--bg); z-index: 10000;
-      display: flex; align-items: center; justify-content: center; flex-direction: column;
-      transition: opacity 0.5s, visibility 0.5s;
-    }
-    .loading-screen.hidden { opacity:0; visibility:hidden; pointer-events: none; }
-    .loading-spinner {
-      width: 50px; height: 50px; border: 3px solid var(--border);
-      border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-logo {
-      font-size:2rem; font-weight:800; margin-bottom:1rem;
-      background: linear-gradient(135deg, var(--purple), var(--pink));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    *{margin:0; padding:0; box-sizing:border-box;}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    .loading-screen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s;}
+    .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+    .loading-spinner{width:50px;height:50px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-logo{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;}
 
-    /* ========== IMPROVED NAVBAR FOR MOBILE SEARCH ========== */
-    .navbar {
-      position: sticky; top:0; z-index:1000;
-      background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.75rem;
-      transition: var(--transition);
-      min-height: 64px;
+    /* navbar */
+    .navbar{position:sticky;top:0;z-index:1000;background:var(--glass);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:0.75rem 1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem;}
+    .navbar .logo{font-size:1.5rem;font-weight:800;text-decoration:none;background:linear-gradient(135deg,var(--purple-light),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;}
+    .navbar .nav-links{display:flex;gap:0.25rem;list-style:none;flex-wrap:wrap;}
+    .navbar .nav-links a{color:var(--muted);text-decoration:none;padding:0.5rem 1rem;border-radius:var(--radius);font-weight:500;font-size:0.9rem;}
+    .navbar .nav-links a.active,.navbar .nav-links a:hover{color:var(--text);background:rgba(139,92,246,0.2);}
+    .nav-actions{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+    .search-container{position:relative;width:100%;max-width:400px;}
+    .search-input{width:100%;padding:0.7rem 1rem 0.7rem 2.7rem;background:var(--bg-card);border:1.5px solid var(--border);border-radius:25px;color:var(--text);font-size:0.95rem;outline:none;}
+    .search-input:focus{border-color:var(--purple);box-shadow:var(--glow-purple);}
+    .search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem;}
+    .search-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);max-height:350px;overflow-y:auto;z-index:100;display:none;}
+    .search-dropdown.active{display:block;}
+    .btn{padding:0.55rem 1.2rem;border-radius:var(--radius);font-weight:600;cursor:pointer;border:none;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:0.4rem;}
+    .btn-primary{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;box-shadow:var(--glow-purple);}
+    .btn-outline{background:transparent;border:1.5px solid var(--purple);color:var(--purple-light);}
+    .btn-sm{padding:0.35rem 0.8rem;font-size:0.8rem;}
+    .avatar-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;text-decoration:none;}
+    .toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:10000;}
+    .toast{background:var(--bg-card);border:1px solid var(--border);padding:0.8rem 1.2rem;border-radius:var(--radius);color:var(--text);animation:slideIn 0.3s;}
+    @keyframes slideIn{from{opacity:0;transform:translateX(100px)}}
+    .anime-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;}
+    .anime-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--bg-card);transition:var(--transition);text-decoration:none;color:var(--text);}
+    .anime-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(139,92,246,0.2);}
+    .card-poster{width:100%;aspect-ratio:3/4;object-fit:cover;}
+    .card-info{padding:0.6rem;}
+    .card-title{font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .hero-section{height:70vh;min-height:400px;position:relative;overflow:hidden;border-radius:0 0 20px 20px;margin-bottom:2rem;}
+    .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.8s;display:flex;align-items:flex-end;padding:3rem 2rem;}
+    .hero-slide.active{opacity:1;}
+    .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(0.5);}
+    .hero-content{position:relative;z-index:2;}
+    .hero-content h1{font-size:2.5rem;font-weight:800;}
+    @media(max-width:768px){
+      .navbar .nav-links{display:none;}
+      .hamburger{display:block;}
+      .search-container{max-width:100%;}
+      .hero-section{height:50vh;min-height:300px;}
+      .hero-content h1{font-size:1.6rem;}
+      .anime-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
     }
-    .navbar.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.5); border-bottom-color: rgba(139,92,246,0.3); }
-    .navbar .logo {
-      font-size:1.5rem; font-weight:800; text-decoration:none;
-      background: linear-gradient(135deg, var(--purple-light), var(--pink));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      white-space: nowrap; letter-spacing: -0.5px;
-      margin-right: auto;
-    }
-    .hamburger {
-      display: none;
-      background: none; border: none; cursor: pointer; color: var(--text); font-size: 1.5rem;
-      order: 1;
-    }
-    .navbar .nav-links {
-      display: flex; gap: 0.25rem; list-style: none; order: 2;
-      flex-wrap: wrap;
-    }
-    .navbar .nav-links a {
-      color: var(--muted); text-decoration:none; padding:0.5rem 1rem;
-      border-radius: var(--radius); transition: var(--transition); font-weight:500; font-size:0.9rem;
-      white-space: nowrap;
-    }
-    .navbar .nav-links a:hover, .navbar .nav-links a.active {
-      color: var(--text); background: rgba(139,92,246,0.15);
-    }
-    .navbar .nav-links a.active { background: rgba(139,92,246,0.25); box-shadow: var(--glow-purple); }
-    .nav-actions {
-      display: flex; align-items: center; gap: 0.75rem; order: 3;
-      flex-wrap: wrap;
-    }
-    /* Search container inside nav-actions – full width on mobile */
-    .search-container {
-      position: relative;
-      width: 100%;
-      max-width: 400px; /* limit on desktop */
-    }
-    .search-input {
-      width: 100%; padding: 0.7rem 1rem 0.7rem 2.7rem;
-      background: var(--bg-card); border: 1.5px solid var(--border);
-      border-radius: 25px; color: var(--text); font-size: 0.95rem;
-      transition: var(--transition); outline: none;
-    }
-    .search-input:focus { border-color: var(--purple); box-shadow: var(--glow-purple); background: var(--bg-card-hover); }
-    .search-icon {
-      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-      color: var(--muted); pointer-events: none; font-size: 1.1rem;
-    }
-    .search-dropdown {
-      position: absolute; top: 100%; left: 0; right: 0;
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius); margin-top: 0.5rem; max-height: 350px;
-      overflow-y: auto; z-index: 100; display: none;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    }
-    .search-dropdown.active { display: block; }
-    .search-result-item {
-      display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 1rem;
-      cursor: pointer; transition: var(--transition); text-decoration:none; color: var(--text);
-    }
-    .search-result-item:hover { background: rgba(139,92,246,0.15); }
-    .search-result-item img { width: 40px; height: 55px; object-fit: cover; border-radius: 4px; background: var(--bg-secondary); }
-    .search-result-info { flex:1; min-width:0; }
-    .search-result-info .title { font-weight:600; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .search-result-info .meta { font-size:0.7rem; color:var(--muted); }
-
-    /* Buttons */
-    .btn {
-      padding:0.55rem 1.2rem; border-radius:var(--radius); font-weight:600; cursor:pointer;
-      border:none; font-size:0.9rem; transition:var(--transition); text-decoration:none;
-      display:inline-flex; align-items:center; gap:0.4rem; white-space:nowrap;
-    }
-    .btn-primary { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color:#fff; box-shadow: var(--glow-purple); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(139,92,246,0.5); }
-    .btn-outline { background:transparent; border:1.5px solid var(--purple); color:var(--purple-light); }
-    .btn-outline:hover { background: rgba(139,92,246,0.1); border-color:var(--pink); color:var(--pink); }
-    .btn-ghost { background:transparent; color:var(--muted); padding:0.5rem; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
-    .btn-ghost:hover { background:rgba(255,255,255,0.05); color:var(--text); }
-    .btn-sm { padding:0.35rem 0.8rem; font-size:0.8rem; border-radius:var(--radius-sm); }
-    .avatar-btn {
-      width:38px; height:38px; border-radius:50%;
-      background:linear-gradient(135deg, var(--purple), var(--pink));
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; font-weight:700; font-size:0.85rem; color:#fff;
-      border:2px solid transparent; transition:var(--transition); text-decoration:none;
-    }
-    .avatar-btn:hover { border-color:var(--pink); box-shadow:var(--glow-pink); }
-
-    /* Sidebar */
-    .sidebar-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1100; opacity:0; visibility:hidden; transition:var(--transition); }
-    .sidebar-overlay.active { opacity:1; visibility:visible; }
-    .mobile-sidebar {
-      position:fixed; top:0; left:-300px; width:280px; height:100vh;
-      background:var(--bg-secondary); z-index:1200; padding:1.5rem;
-      transition:var(--transition); border-right:1px solid var(--border); overflow-y:auto;
-    }
-    .mobile-sidebar.active { left:0; }
-    .mobile-sidebar .nav-links { list-style:none; display:flex; flex-direction:column; gap:0.3rem; margin-top:2rem; }
-    .mobile-sidebar .nav-links a { color:var(--muted); text-decoration:none; padding:0.7rem 1rem; border-radius:var(--radius); display:block; transition:var(--transition); font-weight:500; }
-    .mobile-sidebar .nav-links a:hover, .mobile-sidebar .nav-links a.active { color:var(--text); background:rgba(139,92,246,0.2); }
-    .sidebar-close { position:absolute; top:1rem; right:1rem; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
-
-    /* Main layout */
-    .main-content { position:relative; z-index:1; min-height:calc(100vh - 64px); padding-bottom:3rem; }
-    /* Other styles unchanged... */
-    .hero-section { position:relative; width:100%; height:75vh; min-height:450px; max-height:700px; overflow:hidden; border-radius:0 0 var(--radius-xl) var(--radius-xl); margin-bottom:2rem; }
-    .hero-slide { position:absolute; inset:0; opacity:0; transition:opacity 0.8s; display:flex; align-items:flex-end; padding:3rem 2rem; }
-    .hero-slide.active { opacity:1; }
-    .hero-bg { position:absolute; inset:0; background-size:cover; background-position:center top; filter:brightness(0.5); transform:scale(1.05); transition:transform 8s; }
-    .hero-slide.active .hero-bg { transform:scale(1); }
-    .hero-gradient { position:absolute; inset:0; background:linear-gradient(0deg, var(--bg) 5%, transparent 50%, rgba(11,11,15,0.4) 100%); }
-    .hero-content { position:relative; z-index:2; max-width:650px; animation:slideUp 0.6s ease forwards; }
-    @keyframes slideUp { from{opacity:0; transform:translateY(40px);} to{opacity:1; transform:translateY(0);} }
-    .hero-content .hero-badge { display:inline-block; background:var(--purple); color:#fff; padding:0.3rem 0.8rem; border-radius:20px; font-size:0.75rem; font-weight:700; letter-spacing:0.5px; margin-bottom:0.8rem; }
-    .hero-content h1 { font-size:2.8rem; font-weight:800; line-height:1.1; margin-bottom:0.6rem; text-shadow:0 2px 20px rgba(0,0,0,0.6); }
-    .hero-content .hero-meta { color:var(--text-secondary); font-size:0.9rem; margin-bottom:0.8rem; display:flex; gap:1rem; flex-wrap:wrap; }
-    .hero-content .hero-desc { color:var(--muted); font-size:0.95rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:1.2rem; }
-    .hero-buttons { display:flex; gap:0.75rem; flex-wrap:wrap; }
-    .hero-nav { position:absolute; bottom:1.5rem; right:2rem; z-index:3; display:flex; gap:0.5rem; }
-    .hero-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.4); cursor:pointer; transition:var(--transition); }
-    .hero-dot.active { background:var(--purple); box-shadow:var(--glow-purple); width:28px; border-radius:20px; }
-    .hero-arrow { position:absolute; top:50%; transform:translateY(-50%); z-index:3; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.2); color:#fff; width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; transition:var(--transition); backdrop-filter:blur(4px); }
-    .hero-arrow:hover { background:rgba(139,92,246,0.5); border-color:var(--purple); }
-    .hero-arrow.prev { left:1rem; } .hero-arrow.next { right:1rem; }
-    .section { padding:1.5rem 2rem; max-width:1400px; margin:0 auto; }
-    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; flex-wrap:wrap; gap:0.75rem; }
-    .section-title { font-size:1.4rem; font-weight:700; display:flex; align-items:center; gap:0.5rem; letter-spacing:-0.3px; }
-    .section-title .icon { color:var(--purple-light); font-size:1.3rem; }
-    .section-link { color:var(--purple-light); text-decoration:none; font-weight:500; font-size:0.85rem; }
-    .anime-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(155px,1fr)); gap:1rem; }
-    @media(min-width:768px){ .anime-grid { grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:1.2rem; } }
-    @media(min-width:1200px){ .anime-grid { grid-template-columns:repeat(auto-fill, minmax(185px,1fr)); gap:1.3rem; } }
-    .anime-card { position:relative; border-radius:var(--radius); overflow:hidden; cursor:pointer; background:var(--bg-card); transition:var(--transition); border:1px solid transparent; text-decoration:none; color:var(--text); display:block; }
-    .anime-card:hover { transform:translateY(-6px); border-color:var(--glass-border); box-shadow:0 20px 40px rgba(139,92,246,0.2); background:var(--bg-card-hover); z-index:5; }
-    .anime-card .card-poster { width:100%; aspect-ratio:3/4; object-fit:cover; background:var(--bg-secondary); transition:var(--transition); }
-    .anime-card:hover .card-poster { transform:scale(1.04); }
-    .anime-card .card-overlay { position:absolute; inset:0; background:linear-gradient(0deg, rgba(11,11,15,0.95) 15%, transparent 55%); opacity:0; transition:var(--transition); display:flex; align-items:flex-end; padding:0.8rem; }
-    .anime-card:hover .card-overlay { opacity:1; }
-    .anime-card .card-info { padding:0.6rem 0.7rem; }
-    .anime-card .card-title { font-weight:600; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .anime-card .card-meta { font-size:0.7rem; color:var(--muted); margin-top:0.2rem; }
-    .card-badge { position:absolute; top:0.5rem; left:0.5rem; background:var(--purple); color:#fff; padding:0.2rem 0.5rem; border-radius:4px; font-size:0.65rem; font-weight:700; z-index:2; }
-    .card-rating { position:absolute; top:0.5rem; right:0.5rem; background:rgba(0,0,0,0.7); color:#fbbf24; padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; font-weight:700; z-index:2; }
-    .card-play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) scale(0); width:48px; height:48px; border-radius:50%; background:rgba(139,92,246,0.85); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem; z-index:3; transition:var(--transition); }
-    .anime-card:hover .card-play-btn { transform:translate(-50%,-50%) scale(1); }
-    .skeleton { background:linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:var(--radius); }
-    @keyframes shimmer { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
-    .skeleton-card { aspect-ratio:3/4; border-radius:var(--radius); }
-    .auth-container { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 64px); padding:2rem; }
-    .auth-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:2.5rem; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
-    .auth-card h2 { font-size:1.8rem; font-weight:700; }
-    .form-group { margin-bottom:1rem; }
-    .form-group label { display:block; font-weight:500; margin-bottom:0.35rem; font-size:0.85rem; color:var(--text-secondary); }
-    .form-input { width:100%; padding:0.7rem 1rem; background:var(--bg-secondary); border:1.5px solid var(--border); border-radius:var(--radius); color:var(--text); font-size:0.9rem; transition:var(--transition); outline:none; }
-    .form-input:focus { border-color:var(--purple); box-shadow:var(--glow-purple); }
-    .toast-container { position:fixed; bottom:1.5rem; right:1.5rem; z-index:10000; display:flex; flex-direction:column; gap:0.5rem; }
-    .toast { background:var(--bg-card); border:1px solid var(--border); padding:0.8rem 1.2rem; border-radius:var(--radius); color:var(--text); font-size:0.85rem; animation:slideInRight 0.3s; }
-    @keyframes slideInRight { from{opacity:0; transform:translateX(100px);} to{opacity:1; transform:translateX(0);} }
-    .footer { background:var(--bg-secondary); border-top:1px solid var(--border); padding:2rem; text-align:center; color:var(--muted); font-size:0.85rem; }
-    .footer a { color:var(--purple-light); text-decoration:none; }
-    .footer-links { display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap; margin-bottom:0.75rem; }
-
-    /* ========== RESPONSIVE NAVBAR ========== */
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 0.75rem 1rem;
-      }
-      .navbar .logo {
-        font-size: 1.3rem;
-      }
-      .hamburger {
-        display: block;
-      }
-      .navbar .nav-links {
-        display: none; /* hidden on mobile, use sidebar */
-      }
-      .nav-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-      /* search container takes full width on mobile */
-      .search-container {
-        max-width: 100%;
-        width: 100%;
-        margin-right: 0;
-      }
-      .search-input {
-        font-size: 0.9rem;
-        padding: 0.65rem 1rem 0.65rem 2.5rem;
-      }
-      .btn-sm, .avatar-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-        white-space: nowrap;
-      }
-      .nav-actions .btn-outline {
-        display: none; /* hide login button on mobile when search is full? better keep it visible but small */
-      }
-      #navLoginBtn {
-        font-size: 0.75rem;
-        padding: 0.3rem 0.7rem;
-      }
-      .hero-section {
-        height: 50vh;
-        min-height: 300px;
-      }
-      .hero-content h1 {
-        font-size: 1.6rem;
-      }
-      .hero-desc {
-        -webkit-line-clamp: 2;
-      }
-      .section {
-        padding: 1rem;
-      }
-      .anime-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 0.7rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .hero-content h1 {
-        font-size: 1.3rem;
-      }
-      .hero-buttons .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
-      }
-      .nav-actions .avatar-btn {
-        width: 32px; height: 32px; font-size: 0.7rem;
-      }
-      #navLoginBtn {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-      }
-    }
+    /* page containers */
+    [id^="page-"]{display:none;}
+    #page-home{display:block;}
   </style>
 </head>
 <body>
-  <div class="cursor-glow" id="cursorGlow"></div>
-  <div class="particles-container" id="particlesContainer"></div>
   <div class="loading-screen" id="loadingScreen">
     <div class="loading-logo">AnimeStream</div>
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- NAVBAR with full‑width mobile search -->
   <nav class="navbar" id="navbar">
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">☰</button>
+    <button class="hamburger" id="hamburgerBtn">☰</button>
     <a href="index.html" class="logo">AnimeStream</a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active" data-page="home">Home</a></li>
-      <li><a href="search.html" data-page="search">Search</a></li>
-      <li><a href="schedule.html" data-page="schedule">Schedule</a></li>
-      <li><a href="creator.html" data-page="creator">Creator</a></li>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="search.html">Search</a></li>
+      <li><a href="schedule.html">Schedule</a></li>
+      <li><a href="creator.html">Creator</a></li>
     </ul>
     <div class="nav-actions">
-      <div class="search-container" id="navSearchContainer">
+      <div class="search-container">
         <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="navSearchInput" placeholder="Search anime..." autocomplete="off">
+        <input type="text" class="search-input" id="navSearchInput" placeholder="Search anime...">
         <div class="search-dropdown" id="navSearchDropdown"></div>
       </div>
-      <a href="profile.html" class="avatar-btn" id="navAvatar" title="Profile" style="display:none;">U</a>
+      <a href="profile.html" class="avatar-btn" id="navAvatar" style="display:none;">U</a>
       <a href="login.html" class="btn btn-outline btn-sm" id="navLoginBtn">Login</a>
-      <button class="btn btn-ghost" id="navLogoutBtn" title="Logout" style="display:none;">🚪</button>
+      <button class="btn btn-outline btn-sm" id="navLogoutBtn" style="display:none;">Logout</button>
     </div>
   </nav>
 
   <!-- Mobile Sidebar -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <div class="mobile-sidebar" id="mobileSidebar">
-    <button class="sidebar-close" id="sidebarClose">✕</button>
-    <div class="loading-logo" style="font-size:1.3rem;">AnimeStream</div>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
+  <div class="sidebar-overlay" id="sidebarOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1100;display:none;"></div>
+  <div class="mobile-sidebar" id="mobileSidebar" style="position:fixed;top:0;left:-280px;width:280px;height:100%;background:var(--bg-secondary);z-index:1200;transition:0.3s;padding:1.5rem;">
+    <button id="sidebarClose" style="background:none;border:none;color:var(--text);font-size:1.5rem;float:right;">✕</button>
+    <ul class="nav-links" style="flex-direction:column;gap:0.5rem;margin-top:3rem;">
+      <li><a href="index.html">Home</a></li>
       <li><a href="search.html">Search</a></li>
       <li><a href="schedule.html">Schedule</a></li>
       <li><a href="profile.html">Profile</a></li>
@@ -373,33 +111,284 @@
     </ul>
   </div>
 
-  <main class="main-content" id="mainContent">
-    <!-- Home page content etc... (same as before) -->
-    <!-- The rest of the page structure is identical to the previous version, 
-         just ensuring all page containers exist. I'll include a condensed version below 
-         that includes all necessary page divs without repeating every single line for brevity, 
-         while keeping full functionality. -->
-    <div id="page-home">...</div>
-    <div id="page-anime" style="display:none;">...</div>
-    <div id="page-watch" style="display:none;">...</div>
-    <div id="page-search" style="display:none;">...</div>
-    <div id="page-schedule" style="display:none;">...</div>
-    <div id="page-creator" style="display:none;">...</div>
-    <div id="page-profile" style="display:none;">...</div>
-    <div id="page-login" style="display:none;">...</div>
-    <div id="page-signup" style="display:none;">...</div>
+  <main class="main-content">
+    <!-- HOME -->
+    <div id="page-home">
+      <section class="hero-section" id="heroSection"></section>
+      <section class="section"><div class="section-header"><h2>🔥 Trending</h2></div><div class="anime-grid" id="trendingGrid"></div></section>
+      <section class="section"><div class="section-header"><h2>🆕 Latest</h2></div><div class="anime-grid" id="latestGrid"></div></section>
+      <section class="section"><div class="section-header"><h2>⭐ Popular</h2></div><div class="anime-grid" id="popularGrid"></div></section>
+      <section class="section"><div class="section-header"><h2>📅 Upcoming</h2></div><div class="anime-grid" id="upcomingGrid"></div></section>
+      <section class="section"><div class="section-header"><h2>✅ Completed</h2></div><div class="anime-grid" id="completedGrid"></div></section>
+      <button class="btn btn-primary" id="randomBtn">🎲 Random Anime</button>
+    </div>
+    <!-- ANIME -->
+    <div id="page-anime"><div class="section" id="animeDetail"></div></div>
+    <!-- WATCH -->
+    <div id="page-watch"><div class="watch-container" id="watchContent" style="padding:1rem;"></div></div>
+    <!-- SEARCH -->
+    <div id="page-search"><div class="section"><input type="text" class="search-input" id="searchPageInput" placeholder="Search..."><div class="anime-grid" id="searchResultsGrid"></div></div></div>
+    <!-- SCHEDULE -->
+    <div id="page-schedule"><div class="section" id="scheduleContent"></div></div>
+    <!-- CREATOR -->
+    <div id="page-creator"><div class="section" style="text-align:center;"><h2>Creator</h2><p>Built with ❤️</p></div></div>
+    <!-- PROFILE -->
+    <div id="page-profile"><div class="section" id="profileContent"></div></div>
+    <!-- LOGIN -->
+    <div id="page-login">
+      <div class="auth-container"><div class="auth-card">
+        <h2>Login</h2>
+        <form id="loginForm"><input type="email" class="form-input" id="loginEmail" placeholder="Email"><input type="password" class="form-input" id="loginPassword" placeholder="Password"><button type="submit" class="btn btn-primary">Sign In</button></form>
+        <p>No account? <a href="signup.html">Sign up</a></p>
+      </div></div>
+    </div>
+    <!-- SIGNUP -->
+    <div id="page-signup">
+      <div class="auth-container"><div class="auth-card">
+        <h2>Sign Up</h2>
+        <form id="signupForm"><input type="text" class="form-input" id="signupName" placeholder="Name"><input type="email" class="form-input" id="signupEmail" placeholder="Email"><input type="password" class="form-input" id="signupPassword" placeholder="Password"><button type="submit" class="btn btn-primary">Create Account</button></form>
+      </div></div>
+    </div>
   </main>
 
-  <div class="toast-container" id="toastContainer"></div>
-  <footer class="footer">...</footer>
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script>
-    // The full JavaScript is identical to the previous robust version.
-    // I'll include the complete script here (abbreviated in comment but actually full in the real answer).
-    // To keep the answer readable, I'll embed the entire functional JS code without cuts.
+    // ---------- LOADING GUARANTEE ----------
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loadingScreen').classList.add('hidden');
+      }, 1500); // always hide after 1.5s even if something fails
+    });
+
+    // ---------- FALLBACK API & DATA ----------
+    const JIKAN = 'https://api.jikan.moe/v4';
+    const FALLBACK_IDS = [5114, 11061, 32281, 38000, 40028, 16498, 1535, 30276, 11757];
+    async function jikanFetch(path) {
+      try {
+        const res = await fetch(JIKAN + path);
+        if (!res.ok) throw new Error();
+        return await res.json();
+      } catch(e) {
+        console.warn('Jikan failed, using fallback');
+        if (path.includes('/top/anime')) return { data: await getFallbackAnime(18) };
+        if (path.includes('/seasons/now')) return { data: await getFallbackAnime(18) };
+        if (path.includes('/seasons/upcoming')) return { data: (await getFallbackAnime(12)).filter(a => a.status === 'Not yet aired') };
+        if (path.includes('status=complete')) return { data: (await getFallbackAnime(12)).filter(a => a.status === 'Finished Airing') };
+        return null;
+      }
+    }
+    async function getFallbackAnime(count) {
+      const shuffled = [...FALLBACK_IDS].sort(() => Math.random() - 0.5);
+      const results = await Promise.all(shuffled.slice(0, count).map(id => jikan(`/anime/${id}/full`)));
+      return results.filter(Boolean).map(d => d.data);
+    }
+    async function getTrending() { const d = await jikanFetch('/top/anime?filter=airing&limit=18'); return d?.data || []; }
+    async function getPopular() { const d = await jikanFetch('/top/anime?filter=bypopularity&limit=18'); return d?.data || []; }
+    async function getUpcoming() { const d = await jikanFetch('/seasons/upcoming?limit=12'); return d?.data || []; }
+    async function getCompleted() { const d = await jikanFetch('/top/anime?filter=bypopularity&type=tv&status=complete&limit=12'); return d?.data || []; }
+    async function getCurrentSeason() { const d = await jikanFetch('/seasons/now?limit=18'); return d?.data || []; }
+
+    function createCard(anime) {
+      const a = document.createElement('a');
+      a.href = `anime.html?id=${anime.mal_id}`;
+      a.className = 'anime-card';
+      a.innerHTML = `<img src="${anime.images?.jpg?.large_image_url || ''}" class="card-poster" onerror="this.style.background='%231a1a24'">
+        <div class="card-info"><div class="card-title">${anime.title_english || anime.title}</div></div>`;
+      return a;
+    }
+    function renderGrid(container, list) {
+      if (!container) return;
+      container.innerHTML = '';
+      list.forEach(a => container.appendChild(createCard(a)));
+      if (list.length === 0) container.innerHTML = '<p>No anime found.</p>';
+    }
+
+    async function loadHome() {
+      const [trend, latest, pop, up, comp] = await Promise.all([
+        getTrending(), getCurrentSeason(), getPopular(), getUpcoming(), getCompleted()
+      ]);
+      renderGrid(document.getElementById('trendingGrid'), trend.slice(0,12));
+      renderGrid(document.getElementById('latestGrid'), latest.slice(0,12));
+      renderGrid(document.getElementById('popularGrid'), pop.slice(0,12));
+      renderGrid(document.getElementById('upcomingGrid'), up.slice(0,12));
+      renderGrid(document.getElementById('completedGrid'), comp.slice(0,12));
+    }
+
+    // Hero slider
+    async function initHero() {
+      const trending = await getTrending();
+      const slides = trending.slice(0, 6);
+      const section = document.getElementById('heroSection');
+      if (!section) return;
+      section.innerHTML = '';
+      slides.forEach((a, i) => {
+        const div = document.createElement('div');
+        div.className = `hero-slide ${i===0?'active':''}`;
+        div.innerHTML = `<div class="hero-bg" style="background-image:url('${a.images.jpg.large_image_url}')"></div>
+          <div class="hero-content"><h1>${a.title_english || a.title}</h1>
+          <a href="watch.html?id=${a.mal_id}&ep=1&type=sub" class="btn btn-primary">▶ Watch</a></div>`;
+        section.appendChild(div);
+      });
+      let idx = 0;
+      setInterval(() => {
+        const all = section.querySelectorAll('.hero-slide');
+        all.forEach(s => s.classList.remove('active'));
+        idx = (idx + 1) % all.length;
+        all[idx].classList.add('active');
+      }, 4000);
+    }
+
+    // Routing
+    function showPage(name) {
+      ['home','anime','watch','search','schedule','creator','profile','login','signup'].forEach(p => {
+        const el = document.getElementById(`page-${p}`);
+        if (el) el.style.display = p === name ? 'block' : 'none';
+      });
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const activeLink = document.querySelector(`.nav-links a[href="${name}.html"]`) || document.querySelector(`.nav-links a[href="index.html"]`);
+      if (activeLink) activeLink.classList.add('active');
+      if (name === 'home') { loadHome(); initHero(); }
+      if (name === 'anime') loadAnimeDetail();
+      if (name === 'watch') loadWatchPage();
+      if (name === 'search') initSearchPage();
+      if (name === 'schedule') loadSchedule();
+      if (name === 'profile') loadProfile();
+    }
+
+    function detectPage() {
+      const path = window.location.pathname.split('/').pop();
+      if (path.includes('anime')) return 'anime';
+      if (path.includes('watch')) return 'watch';
+      if (path.includes('search')) return 'search';
+      if (path.includes('schedule')) return 'schedule';
+      if (path.includes('creator')) return 'creator';
+      if (path.includes('profile')) return 'profile';
+      if (path.includes('login')) return 'login';
+      if (path.includes('signup')) return 'signup';
+      return 'home';
+    }
+
+    // Basic anime detail loader
+    async function loadAnimeDetail() {
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (!id) return;
+      const container = document.getElementById('animeDetail');
+      container.innerHTML = '<p>Loading...</p>';
+      const anime = await jikanFetch(`/anime/${id}/full`);
+      if (!anime?.data) { container.innerHTML = '<p>Anime not found.</p>'; return; }
+      const a = anime.data;
+      container.innerHTML = `<img src="${a.images.jpg.large_image_url}" style="width:200px;border-radius:var(--radius);"><h2>${a.title_english || a.title}</h2><p>${a.synopsis || ''}</p><a href="watch.html?id=${a.mal_id}&ep=1&type=sub" class="btn btn-primary">Watch</a>`;
+    }
+
+    function loadWatchPage() {
+      const id = new URLSearchParams(window.location.search).get('id');
+      const ep = new URLSearchParams(window.location.search).get('ep') || 1;
+      const type = new URLSearchParams(window.location.search).get('type') || 'sub';
+      document.getElementById('watchContent').innerHTML = `<iframe src="https://megaplay.buzz/stream/mal/${id}/${ep}/${type}" style="width:100%;aspect-ratio:16/9;" allowfullscreen></iframe>`;
+    }
+
+    function initSearchPage() {
+      const input = document.getElementById('searchPageInput');
+      if (!input) return;
+      input.addEventListener('input', async function() {
+        const q = this.value.trim();
+        if (q.length < 2) return;
+        const res = await jikanFetch(`/anime?q=${encodeURIComponent(q)}&limit=20`);
+        renderGrid(document.getElementById('searchResultsGrid'), res?.data || []);
+      });
+    }
+
+    async function loadSchedule() {
+      const data = await getCurrentSeason();
+      const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      const html = days.map(day => {
+        const items = data.filter(a => a.broadcast?.day === day).slice(0,4);
+        if (items.length === 0) return '';
+        return `<h3>${day}</h3><div class="anime-grid">${items.map(a => createCard(a).outerHTML).join('')}</div>`;
+      }).join('');
+      document.getElementById('scheduleContent').innerHTML = html || '<p>No schedule data.</p>';
+    }
+
+    function loadProfile() {
+      const user = JSON.parse(localStorage.getItem('as_user') || 'null');
+      if (!user) {
+        document.getElementById('profileContent').innerHTML = '<p>Please <a href="login.html">login</a>.</p>';
+        return;
+      }
+      document.getElementById('profileContent').innerHTML = `<h2>${user.displayName || user.email}</h2><button onclick="logout()">Logout</button>`;
+    }
+
+    function logout() {
+      localStorage.removeItem('as_user');
+      window.location.href = 'index.html';
+    }
+
+    // Auth
+    document.getElementById('loginForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const user = { email, displayName: email.split('@')[0] };
+      localStorage.setItem('as_user', JSON.stringify(user));
+      window.location.href = 'index.html';
+    });
+    document.getElementById('signupForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('signupEmail').value;
+      const name = document.getElementById('signupName').value || email.split('@')[0];
+      const user = { email, displayName: name };
+      localStorage.setItem('as_user', JSON.stringify(user));
+      window.location.href = 'index.html';
+    });
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      const page = detectPage();
+      showPage(page);
+      // Mobile sidebar
+      document.getElementById('hamburgerBtn').onclick = () => {
+        document.getElementById('mobileSidebar').style.left = '0';
+        document.getElementById('sidebarOverlay').style.display = 'block';
+      };
+      document.getElementById('sidebarClose').onclick = () => {
+        document.getElementById('mobileSidebar').style.left = '-280px';
+        document.getElementById('sidebarOverlay').style.display = 'none';
+      };
+      document.getElementById('sidebarOverlay').onclick = () => {
+        document.getElementById('mobileSidebar').style.left = '-280px';
+        document.getElementById('sidebarOverlay').style.display = 'none';
+      };
+      // Random anime
+      document.getElementById('randomBtn')?.addEventListener('click', async () => {
+        const trending = await getTrending();
+        if (trending.length) {
+          const r = trending[Math.floor(Math.random() * trending.length)];
+          window.location.href = `anime.html?id=${r.mal_id}`;
+        }
+      });
+      // Update auth UI
+      const user = JSON.parse(localStorage.getItem('as_user') || 'null');
+      if (user) {
+        document.getElementById('navAvatar').style.display = 'flex';
+        document.getElementById('navAvatar').textContent = user.displayName[0].toUpperCase();
+        document.getElementById('navLoginBtn').style.display = 'none';
+        document.getElementById('navLogoutBtn').style.display = 'inline-block';
+        document.getElementById('navLogoutBtn').onclick = logout;
+      }
+      // Navigation search
+      const navSearch = document.getElementById('navSearchInput');
+      navSearch?.addEventListener('input', async function() {
+        const q = this.value.trim();
+        const dropdown = document.getElementById('navSearchDropdown');
+        if (q.length < 2) { dropdown.classList.remove('active'); return; }
+        const res = await jikanFetch(`/anime?q=${encodeURIComponent(q)}&limit=6`);
+        if (res?.data) {
+          dropdown.innerHTML = res.data.map(a => `<a href="anime.html?id=${a.mal_id}" class="search-result-item" style="padding:0.5rem;display:block;color:var(--text);">${a.title_english || a.title}</a>`).join('');
+          dropdown.classList.add('active');
+        }
+      });
+      navSearch?.addEventListener('blur', () => {
+        setTimeout(() => document.getElementById('navSearchDropdown').classList.remove('active'), 200);
+      });
+    });
   </script>
 </body>
 </html>
