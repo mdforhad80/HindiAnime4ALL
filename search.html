@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search anime - AnimeStream">
+    <meta property="og:title" content="AnimeStream - Search Anime">
+    <title>Search Anime - AnimeStream</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+    <style>
+        :root {
+            --bg: #0b0b0f; --bg-secondary: #121218; --bg-tertiary: #1a1a24;
+            --purple: #8b5cf6; --purple-dark: #7c3aed; --purple-glow: rgba(139, 92, 246, 0.4);
+            --pink: #d946ef; --text: #f3f4f6; --text-secondary: #d1d5db; --muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08); --border-hover: rgba(255, 255, 255, 0.16);
+            --glass: rgba(18, 18, 24, 0.75); --glass-strong: rgba(18, 18, 24, 0.9);
+            --card-radius: 16px; --card-radius-sm: 10px;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .particles-container { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+        .particle {
+            position: absolute; border-radius: 50%; animation: floatUp linear infinite; opacity: 0;
+            box-shadow: 0 0 6px currentColor;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+        .navbar {
+            position: sticky; top: 0; z-index: 1000; display: flex; align-items: center;
+            justify-content: space-between; height: 60px; padding: 0 16px;
+            background: var(--glass-strong); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); gap: 12px;
+        }
+        .navbar-left, .navbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .navbar-center { display: flex; align-items: center; justify-content: center; flex: 1; gap: 8px; min-width: 0; }
+        .navbar-logo {
+            font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--purple), var(--pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+        }
+        .navbar-logo-icon { font-size: 1.5rem; -webkit-text-fill-color: initial; }
+        .navbar-logo-text { font-size: 1.1rem; font-weight: 700; background: linear-gradient(135deg, var(--purple), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .icon-btn {
+            display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+            border-radius: 50%; background: transparent; border: none; color: var(--text);
+            cursor: pointer; transition: all var(--transition-fast); font-size: 1.2rem;
+        }
+        .icon-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--purple); }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.35s; }
+        .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+        .sidebar {
+            position: fixed; top: 0; left: -300px; width: 260px; height: 100%; background: var(--bg-secondary);
+            z-index: 1002; transition: left 0.35s; display: flex; flex-direction: column;
+            border-right: 1px solid var(--border); overflow-y: auto; padding: 16px 0;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-header { padding: 12px 20px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-secondary);
+            text-decoration: none; border-left: 3px solid transparent; transition: all 0.2s;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--text); background: rgba(139,92,246,0.08); border-left-color: var(--purple); }
+        .main-content { position: relative; z-index: 1; padding: 16px 16px 80px; max-width: 1400px; margin: 0 auto; }
+        .search-box {
+            display: flex; align-items: center; background: var(--bg-tertiary); border-radius: 30px;
+            border: 1px solid var(--border); padding: 8px 20px; gap: 10px; margin-bottom: 16px;
+        }
+        .search-box input {
+            flex: 1; background: transparent; border: none; color: var(--text); font-size: 1rem; outline: none;
+        }
+        .filter-bar {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+        }
+        .filter-btn {
+            padding: 6px 12px; border-radius: 20px; background: var(--bg-tertiary);
+            border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.8rem;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .filter-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+        .anime-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px;
+        }
+        @media(min-width: 600px){ .anime-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
+        .anime-card {
+            position: relative; border-radius: var(--card-radius); overflow: hidden;
+            background: var(--bg-tertiary); border: 1px solid var(--border);
+            transition: all 0.3s; cursor: pointer; text-decoration: none; color: inherit;
+        }
+        .anime-card:hover { transform: translateY(-6px); border-color: var(--purple); box-shadow: 0 12px 32px rgba(139,92,246,0.2); }
+        .anime-card-poster { aspect-ratio: 3/4; overflow: hidden; }
+        .anime-card-poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .anime-card:hover .anime-card-poster img { transform: scale(1.08); }
+        .anime-card-info { padding: 10px 12px; }
+        .anime-card-title { font-weight: 600; font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .load-more { text-align: center; margin: 20px 0; }
+        .btn-primary {
+            background: var(--purple); color: #fff; padding: 10px 24px; border-radius: 24px;
+            border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px var(--purple-glow);
+        }
+        .btn-primary:hover { background: var(--purple-dark); transform: translateY(-2px); }
+        .no-results { text-align: center; color: var(--muted); padding: 40px; }
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: var(--bg-tertiary); padding: 10px 20px; border-radius: 24px; z-index: 2000; transition: transform 0.3s; }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .skeleton { background: linear-gradient(90deg, var(--bg-tertiary) 25%, rgba(255,255,255,0.05) 50%, var(--bg-tertiary) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+        @keyframes shimmer { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+    </style>
+</head>
+<body>
+    <div class="particles-container" id="particlesContainer"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span style="font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">AnimeStream</span>
+            <button class="icon-btn" id="sidebarClose">✕</button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html">🏠 Home</a>
+            <a href="search.html" class="active">🔍 Search</a>
+            <a href="schedule.html">📅 Schedule</a>
+            <a href="creator.html">👤 Creator</a>
+        </div>
+    </nav>
+    <header class="navbar">
+        <div class="navbar-left"><button class="icon-btn" id="menuToggle">☰</button></div>
+        <div class="navbar-center"><a href="index.html" class="navbar-logo"><span class="navbar-logo-icon">🎬</span><span class="navbar-logo-text">AnimeStream</span></a></div>
+        <div class="navbar-right"><button class="icon-btn" id="searchToggle" style="opacity:0.5;pointer-events:none;">🔍</button></div>
+    </header>
+    <main class="main-content">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Search anime...">
+        </div>
+        <div class="filter-bar" id="filterBar">
+            <span style="color:var(--muted);font-size:0.8rem;margin-right:4px;">Type:</span>
+            <button class="filter-btn active" data-filter="type" data-value="">All</button>
+            <button class="filter-btn" data-filter="type" data-value="tv">TV</button>
+            <button class="filter-btn" data-filter="type" data-value="movie">Movie</button>
+            <button class="filter-btn" data-filter="type" data-value="ova">OVA</button>
+            <button class="filter-btn" data-filter="type" data-value="special">Special</button>
+            <span style="color:var(--muted);font-size:0.8rem;margin-left:8px;">Status:</span>
+            <button class="filter-btn active" data-filter="status" data-value="">All</button>
+            <button class="filter-btn" data-filter="status" data-value="airing">Airing</button>
+            <button class="filter-btn" data-filter="status" data-value="complete">Complete</button>
+            <button class="filter-btn" data-filter="status" data-value="upcoming">Upcoming</button>
+        </div>
+        <div class="anime-grid" id="searchResults"></div>
+        <div class="load-more" id="loadMoreContainer" style="display:none;">
+            <button class="btn-primary" id="loadMoreBtn">Load More</button>
+        </div>
+        <div class="no-results" id="noResults" style="display:none;">No anime found. Try different keywords.</div>
+    </main>
+    <div class="toast" id="toast"></div>
+    <script>
+        const CONFIG = { JIKAN_BASE: 'https://api.jikan.moe/v4' };
+        const Storage = {
+            get(k,d){ try{return JSON.parse(localStorage.getItem('as_'+k))||d;}catch{return d;} },
+            set(k,v){ try{localStorage.setItem('as_'+k,JSON.stringify(v));}catch{} }
+        };
+        const UI = {
+            toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+        };
+        let currentPage = 1;
+        let currentQuery = '';
+        let currentType = '';
+        let currentStatus = '';
+        let isLoading = false;
+        let hasMore = true;
+
+        function debounce(fn, delay) { let timer; return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); }; }
+
+        async function searchAnime(reset = true) {
+            if (isLoading) return;
+            if (reset) { currentPage = 1; hasMore = true; document.getElementById('searchResults').innerHTML = ''; }
+            if (!hasMore) return;
+            isLoading = true;
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query && reset) {
+                document.getElementById('searchResults').innerHTML = '<div class="no-results">Type something to search...</div>';
+                document.getElementById('loadMoreContainer').style.display = 'none';
+                isLoading = false;
+                return;
+            }
+            let url = `${CONFIG.JIKAN_BASE}/anime?q=${encodeURIComponent(query)}&page=${currentPage}&limit=20&sfw=true`;
+            if (currentType) url += `&type=${currentType}`;
+            if (currentStatus) url += `&status=${currentStatus}`;
+            try {
+                const resp = await fetch(url);
+                const data = await resp.json();
+                const list = data.data || [];
+                if (list.length === 0 && currentPage === 1) {
+                    document.getElementById('noResults').style.display = 'block';
+                    document.getElementById('loadMoreContainer').style.display = 'none';
+                } else {
+                    document.getElementById('noResults').style.display = 'none';
+                    if (list.length < 20) hasMore = false;
+                    renderCards(list);
+                    document.getElementById('loadMoreContainer').style.display = hasMore ? 'block' : 'none';
+                }
+            } catch (e) {
+                UI.toast('Search failed. Retrying...');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function renderCards(animeList) {
+            const grid = document.getElementById('searchResults');
+            animeList.forEach(a => {
+                const card = document.createElement('a');
+                card.href = `anime.html?id=${a.mal_id}`;
+                card.className = 'anime-card';
+                card.innerHTML = `
+                    <div class="anime-card-poster"><img src="${a.images?.jpg?.large_image_url || ''}" alt="${a.title_english || a.title}" loading="lazy"></div>
+                    <div class="anime-card-info"><div class="anime-card-title">${a.title_english || a.title}</div><small style="color:var(--muted)">★ ${(a.score||0).toFixed(1)} · ${a.type || 'TV'}</small></div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const debouncedSearch = debounce(() => searchAnime(true), 400);
+        document.getElementById('searchInput').addEventListener('input', debouncedSearch);
+        document.getElementById('loadMoreBtn').addEventListener('click', () => { currentPage++; searchAnime(false); });
+
+        // Filter handling
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filterGroup = btn.dataset.filter;
+                // Remove active from same group
+                document.querySelectorAll(`.filter-btn[data-filter="${filterGroup}"]`).forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if (filterGroup === 'type') currentType = btn.dataset.value;
+                if (filterGroup === 'status') currentStatus = btn.dataset.value;
+                searchAnime(true);
+            });
+        });
+
+        // Sidebar & particles
+        function init() {
+            document.getElementById('menuToggle').addEventListener('click', ()=>{
+                document.getElementById('sidebar').classList.add('open');
+                document.getElementById('sidebarOverlay').classList.add('open');
+            });
+            document.getElementById('sidebarClose').addEventListener('click', ()=>{
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebarOverlay').classList.remove('open');
+            });
+            document.getElementById('sidebarOverlay').addEventListener('click', ()=>{
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebarOverlay').classList.remove('open');
+            });
+            // Particles
+            const container = document.getElementById('particlesContainer');
+            for(let i=0;i<20;i++){
+                const p = document.createElement('div'); p.className='particle';
+                const s = Math.random()*3+1.5;
+                p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${i%2?'#8b5cf6':'#d946ef'};animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*8}s;`;
+                container.appendChild(p);
+            }
+            // Check URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('q')) document.getElementById('searchInput').value = urlParams.get('q');
+            searchAnime(true);
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
