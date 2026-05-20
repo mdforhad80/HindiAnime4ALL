@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anime Schedule - AnimeStream">
+    <title>Anime Schedule - AnimeStream</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+    <style>
+        :root {
+            --bg: #0b0b0f; --bg-secondary: #121218; --bg-tertiary: #1a1a24;
+            --purple: #8b5cf6; --purple-dark: #7c3aed; --pink: #d946ef;
+            --text: #f3f4f6; --muted: #9ca3af; --border: rgba(255,255,255,0.08);
+            --glass: rgba(18,18,24,0.75); --card-radius: 16px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+        .navbar {
+            position: sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between;
+            height:60px; padding:0 16px; background:var(--glass); backdrop-filter:blur(20px); border-bottom:1px solid var(--border);
+        }
+        .navbar-left,.navbar-right{ display:flex; align-items:center; gap:8px; }
+        .navbar-center{ flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,var(--purple),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .icon-btn{ width:40px; height:40px; border-radius:50%; background:transparent; border:none; color:var(--text); font-size:1.2rem; cursor:pointer; }
+        .sidebar { /* same as before */ }
+        .day-tabs {
+            display: flex; overflow-x: auto; gap: 6px; padding: 12px 0; border-bottom:1px solid var(--border);
+            scrollbar-width:none;
+        }
+        .day-tabs::-webkit-scrollbar { display:none; }
+        .day-tab {
+            padding: 8px 18px; border-radius: 20px; background: var(--bg-tertiary); border:1px solid var(--border);
+            color: var(--text-secondary); font-size:0.9rem; cursor:pointer; white-space:nowrap; transition:0.2s;
+        }
+        .day-tab.active { background: var(--purple); border-color: var(--purple); color:#fff; }
+        .anime-list { padding: 16px 0; }
+        .schedule-item {
+            display: flex; gap: 12px; padding: 12px; border-radius: var(--card-radius); background: var(--bg-tertiary);
+            margin-bottom: 8px; border:1px solid var(--border); transition:0.2s;
+        }
+        .schedule-item:hover { border-color: var(--purple); }
+        .schedule-poster { width: 60px; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+        .schedule-poster img { width:100%; display:block; }
+        .schedule-info { min-width:0; }
+        .schedule-title { font-weight:600; font-size:0.9rem; }
+        .schedule-meta { font-size:0.7rem; color:var(--muted); }
+        .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(120px); background:var(--bg-tertiary); padding:10px 20px; border-radius:24px; z-index:2000; transition:0.3s; }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left"><a href="index.html" class="icon-btn" style="text-decoration:none;">🏠</a></div>
+        <div class="navbar-center">Schedule</div>
+        <div class="navbar-right"><span id="todayLabel" style="font-size:0.8rem;color:var(--muted);"></span></div>
+    </header>
+    <div class="day-tabs" id="dayTabs"></div>
+    <div class="anime-list" id="scheduleList"></div>
+    <div class="toast" id="toast"></div>
+    <script>
+        const CONFIG = { JIKAN_BASE: 'https://api.jikan.moe/v4' };
+        const days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+        const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        let currentDay = days[new Date().getDay() === 0 ? 6 : new Date().getDay()-1]; // Jikan: monday=0
+        function initTabs() {
+            const container = document.getElementById('dayTabs');
+            days.forEach((day, i) => {
+                const tab = document.createElement('button');
+                tab.className = 'day-tab' + (day === currentDay ? ' active' : '');
+                tab.textContent = dayNames[i];
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentDay = day;
+                    loadSchedule(day);
+                });
+                container.appendChild(tab);
+            });
+            document.getElementById('todayLabel').textContent = new Date().toLocaleDateString('en-US',{weekday:'long'});
+            loadSchedule(currentDay);
+        }
+        async function loadSchedule(day) {
+            const list = document.getElementById('scheduleList');
+            list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Loading...</div>';
+            try {
+                const resp = await fetch(`${CONFIG.JIKAN_BASE}/schedules?filter=${day}&limit=20&sfw=true`);
+                const data = await resp.json();
+                const items = data.data || [];
+                if (items.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">No anime scheduled for this day.</div>';
+                    return;
+                }
+                list.innerHTML = items.map(anime => `
+                    <a href="anime.html?id=${anime.mal_id}" class="schedule-item" style="text-decoration:none;color:inherit;">
+                        <div class="schedule-poster"><img src="${anime.images?.jpg?.small_image_url || ''}" alt=""></div>
+                        <div class="schedule-info">
+                            <div class="schedule-title">${anime.title_english || anime.title}</div>
+                            <div class="schedule-meta">★ ${(anime.score||0).toFixed(1)} · ${anime.type || 'TV'} · ${anime.episodes||'?'} eps</div>
+                            <div class="schedule-meta">${anime.broadcast?.string || ''}</div>
+                        </div>
+                    </a>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Failed to load schedule.</div>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', initTabs);
+    </script>
+</body>
+</html>
