@@ -3,18 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AnimeStream - Watch anime online free. Stream your favorite anime with sub and dub options.">
-    <meta property="og:title" content="AnimeStream - Watch Anime Online Free">
-    <meta property="og:description" content="Premium anime streaming with no ads. Watch subbed and dubbed anime in HD quality.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://animestream.pages.dev">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AnimeStream - Watch Anime Online Free">
-    <meta name="twitter:description" content="Premium anime streaming platform. Watch HD anime with sub and dub.">
-    <meta name="theme-color" content="#0b0b0f">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
-    <title>AnimeStream - Watch Anime Online Free | HD Sub & Dub</title>
+    <title>AnimeStream - Watch Anime Online Free</title>
     <style>
         :root {
             --bg: #0b0b0f;
@@ -29,656 +18,458 @@
             --card-hover: #1e1e2a;
             --glow-purple: rgba(139, 92, 246, 0.4);
             --glow-pink: rgba(217, 70, 239, 0.35);
-            --glass-bg: rgba(18, 18, 24, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --radius-sm: 10px;
             --radius: 16px;
-            --radius-lg: 22px;
-            --radius-xl: 28px;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --radius-sm: 10px;
             --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-            --shadow-glow: 0 0 30px var(--glow-purple);
-            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-            --font-main: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            --transition: 0.3s ease;
             --navbar-height: 62px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
-        *{box-sizing:border-box;margin:0;padding:0;}
-        html{scroll-behavior:smooth;font-size:16px;}
-        body{font-family:var(--font-main);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;overflow-x:hidden;}
-        body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;
-            background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.04) 0%,transparent 60%),
-                    radial-gradient(ellipse at 80% 20%,rgba(217,70,239,0.03) 0%,transparent 50%),
-                    radial-gradient(ellipse at 20% 70%,rgba(139,92,246,0.02) 0%,transparent 40%);}
-        ::-webkit-scrollbar{width:6px;height:6px;}
-        ::-webkit-scrollbar-track{background:var(--bg);}
-        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
-        ::selection{background:var(--purple);color:#fff;}
-        .cursor-glow{position:fixed;pointer-events:none;z-index:9999;width:32px;height:32px;border-radius:50%;
-            background:radial-gradient(circle,var(--purple) 0%,transparent 70%);opacity:0.5;transform:translate(-50%,-50%);mix-blend-mode:screen;filter:blur(6px);}
-        @media (max-width:768px){.cursor-glow{display:none;}}
-        #particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;}
-        .navbar{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;
-            height:var(--navbar-height);padding:0 16px;background:var(--glass-bg);backdrop-filter:blur(20px);
-            -webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);gap:12px;}
-        .nav-left{display:flex;align-items:center;gap:8px;flex-shrink:0;z-index:1001;}
-        .nav-center{display:flex;align-items:center;justify-content:center;gap:8px;flex:1;position:absolute;left:50%;transform:translateX(-50%);}
-        .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;z-index:1001;}
-        .nav-logo{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));
-            display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;box-shadow:0 0 16px var(--glow-purple);text-decoration:none;}
-        .nav-title{font-size:1.1rem;font-weight:700;white-space:nowrap;}
-        .nav-title span{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-        .icon-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--bg-tertiary);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:var(--transition);}
-        .icon-btn:hover{background:var(--card-hover);color:var(--purple);box-shadow:0 0 14px var(--glow-purple);}
-        .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:998;opacity:0;pointer-events:none;transition:opacity 0.3s;}
-        .sidebar-overlay.active{opacity:1;pointer-events:auto;}
-        .sidebar{position:fixed;top:0;left:-300px;width:270px;height:100%;background:var(--bg-secondary);z-index:999;overflow-y:auto;padding:20px 16px;transition:left 0.35s;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--border);}
-        .sidebar.active{left:0;}
-        .sidebar-close{width:34px;height:34px;border-radius:50%;border:none;background:var(--bg-tertiary);color:var(--text);cursor:pointer;font-size:1.1rem;}
-        .sidebar-link{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--radius-sm);color:var(--text);text-decoration:none;font-weight:500;font-size:0.95rem;transition:var(--transition);}
-        .sidebar-link:hover,.sidebar-link.active{background:var(--card-hover);color:var(--purple);}
-        .search-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);z-index:2000;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.3s;}
-        .search-overlay.active{opacity:1;pointer-events:auto;}
-        .search-overlay-inner{max-width:700px;width:100%;margin:20px auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
-        .search-input-wrap{display:flex;align-items:center;gap:10px;background:var(--bg-secondary);border-radius:var(--radius-lg);padding:6px 16px;border:2px solid var(--border);}
-        .search-input-wrap input{flex:1;background:none;border:none;color:var(--text);font-size:1.1rem;padding:12px 0;outline:none;}
-        .search-results-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;max-height:70vh;}
-        .search-result-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text);text-decoration:none;}
-        .search-result-item:hover{background:var(--card-hover);}
-        .main-content{position:relative;z-index:1;padding:16px;max-width:1400px;margin:0 auto;}
-        .page-content{display:none;}
-        .page-content.active{display:block;}
-        .hero-slider{position:relative;border-radius:var(--radius-xl);overflow:hidden;margin-bottom:24px;height:420px;background:var(--bg-secondary);box-shadow:var(--shadow-lg);}
-        @media(max-width:768px){.hero-slider{height:280px;}}
-        .hero-slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 0.7s;display:flex;align-items:flex-end;padding:30px;background-size:cover;background-position:center;}
-        .hero-slide.active{opacity:1;}
-        .hero-slide::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.4) 40%,rgba(0,0,0,0.2) 100%);}
-        .hero-info{position:relative;z-index:2;max-width:600px;}
-        .hero-info h2{font-size:2rem;font-weight:800;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
-        @media(max-width:768px){.hero-info h2{font-size:1.3rem;}}
-        .hero-info .meta-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-        .hero-info .meta-tags span{background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);padding:4px 10px;border-radius:20px;font-size:0.75rem;color:#fff;}
-        .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:30px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none;text-decoration:none;transition:var(--transition);font-family:var(--font-main);}
-        .btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;box-shadow:0 4px 16px var(--glow-purple);}
-        .btn-primary:hover{box-shadow:0 6px 24px var(--glow-pink);transform:translateY(-2px);}
-        .btn-secondary{background:rgba(255,255,255,0.1);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);}
-        .section{margin-bottom:28px;}
-        .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-        .section-title{font-size:1.25rem;font-weight:700;}
-        .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px;}
-        @media(max-width:480px){.card-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}}
-        .anime-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--card-bg);cursor:pointer;transition:var(--transition);text-decoration:none;color:var(--text);display:flex;flex-direction:column;box-shadow:var(--shadow-sm);border:1px solid transparent;}
-        .anime-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg),0 0 20px var(--glow-purple);border-color:rgba(139,92,246,0.3);background:var(--card-hover);}
-        .poster-wrap{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--bg-tertiary);}
-        .poster-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
-        .anime-card:hover .poster-wrap img{transform:scale(1.08);}
-        .rating-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);padding:3px 8px;border-radius:14px;font-size:0.7rem;color:#fbbf24;}
-        .card-info{padding:10px 12px;}
-        .card-title{font-weight:600;font-size:0.85rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-        .quick-watch{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);width:44px;height:44px;border-radius:50%;background:var(--purple);color:#fff;border:none;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:transform 0.3s;z-index:5;box-shadow:0 0 20px var(--glow-purple);}
-        .anime-card:hover .quick-watch{transform:translate(-50%,-50%) scale(1);}
-        .loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.5s,visibility 0.5s;}
-        .loading-screen.hidden{opacity:0;visibility:hidden;}
-        .loader-ring{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin 0.8s linear infinite;}
-        @keyframes spin{to{transform:rotate(360deg);}}
-        .watch-container{display:grid;grid-template-columns:1fr 340px;gap:16px;}
-        @media(max-width:1000px){.watch-container{grid-template-columns:1fr;}}
-        .player-wrapper{aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-lg);}
-        .player-wrapper iframe{width:100%;height:100%;border:none;}
-        .ep-sidebar{background:var(--card-bg);border-radius:var(--radius);padding:14px;border:1px solid var(--border);max-height:70vh;overflow-y:auto;}
-        .ep-sidebar-item{padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:0.82rem;display:block;text-decoration:none;color:var(--text);}
-        .ep-sidebar-item:hover,.ep-sidebar-item.active{background:var(--purple);color:#fff;}
-        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card-hover);color:var(--text);padding:10px 20px;border-radius:30px;z-index:5000;font-size:0.85rem;box-shadow:var(--shadow-lg);}
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg); }
+        ::-webkit-scrollbar-thumb { background:var(--border); border-radius:8px; }
+        .navbar {
+            position: sticky; top:0; z-index:1000; display:flex; align-items:center;
+            height:var(--navbar-height); padding:0 16px;
+            background: rgba(18,18,24,0.75); backdrop-filter: blur(20px);
+            border-bottom:1px solid rgba(255,255,255,0.06); gap:12px;
+        }
+        .nav-left, .nav-right { display:flex; align-items:center; gap:8px; z-index:1001; }
+        .nav-center { position:absolute; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:8px; }
+        .nav-logo {
+            width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--purple),var(--pink));
+            display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff;
+            text-decoration:none; box-shadow:0 0 16px var(--glow-purple);
+        }
+        .nav-title span { background:linear-gradient(135deg,var(--purple),var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .icon-btn {
+            width:40px; height:40px; border-radius:50%; border:none; background:var(--bg-tertiary);
+            color:var(--text); cursor:pointer; font-size:1.2rem; transition:var(--transition);
+        }
+        .icon-btn:hover { background:var(--card-hover); color:var(--purple); }
+        .sidebar-overlay {
+            position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);
+            z-index:998; opacity:0; pointer-events:none; transition:opacity 0.3s;
+        }
+        .sidebar-overlay.active { opacity:1; pointer-events:auto; }
+        .sidebar {
+            position:fixed; top:0; left:-280px; width:280px; height:100%; background:var(--bg-secondary);
+            z-index:999; padding:20px; transition:left 0.35s; overflow-y:auto;
+            display:flex; flex-direction:column; gap:6px; border-right:1px solid var(--border);
+        }
+        .sidebar.active { left:0; }
+        .sidebar-link {
+            display:flex; align-items:center; gap:12px; padding:12px; border-radius:var(--radius-sm);
+            color:var(--text); text-decoration:none; font-weight:500; transition:var(--transition);
+        }
+        .sidebar-link:hover, .sidebar-link.active { background:var(--card-hover); color:var(--purple); }
+        .search-overlay {
+            position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85);
+            backdrop-filter:blur(16px); z-index:2000; display:flex; flex-direction:column;
+            opacity:0; pointer-events:none; transition:opacity 0.3s;
+        }
+        .search-overlay.active { opacity:1; pointer-events:auto; }
+        .search-overlay-inner { max-width:700px; width:100%; margin:20px auto; padding:16px; }
+        .search-input-wrap {
+            display:flex; align-items:center; gap:10px; background:var(--bg-secondary);
+            border-radius:var(--radius); padding:6px 16px; border:2px solid var(--border);
+        }
+        .search-input-wrap input {
+            flex:1; background:none; border:none; color:var(--text); font-size:1.1rem; padding:12px 0; outline:none;
+        }
+        .main-content { max-width:1400px; margin:0 auto; padding:16px; }
+        .page { display:none; }
+        .page.active { display:block; }
+        .hero-slider {
+            position:relative; border-radius:var(--radius); overflow:hidden; height:420px;
+            margin-bottom:24px; background:var(--bg-secondary);
+        }
+        .hero-slide {
+            position:absolute; top:0; left:0; width:100%; height:100%; opacity:0;
+            transition:opacity 0.7s; display:flex; align-items:flex-end; padding:30px;
+            background-size:cover; background-position:center;
+        }
+        .hero-slide.active { opacity:1; }
+        .hero-slide::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.4) 50%);
+        }
+        .hero-info { position:relative; z-index:2; }
+        .hero-info h2 { font-size:2rem; font-weight:800; }
+        .btn {
+            display:inline-flex; align-items:center; gap:8px; padding:10px 22px; border-radius:30px;
+            font-weight:600; text-decoration:none; border:none; cursor:pointer; transition:var(--transition);
+        }
+        .btn-primary { background:linear-gradient(135deg,var(--purple),var(--pink)); color:#fff; }
+        .btn-secondary { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:14px; }
+        .anime-card {
+            position:relative; border-radius:var(--radius); overflow:hidden;
+            background:var(--card-bg); transition:var(--transition); cursor:pointer; text-decoration:none; color:var(--text);
+            box-shadow:0 2px 8px rgba(0,0,0,0.3); border:1px solid transparent;
+        }
+        .anime-card:hover { transform:translateY(-4px); border-color:rgba(139,92,246,0.3); }
+        .poster-wrap { aspect-ratio:3/4; overflow:hidden; background:var(--bg-tertiary); }
+        .poster-wrap img { width:100%; height:100%; object-fit:cover; }
+        .card-info { padding:10px; }
+        .card-title { font-weight:600; font-size:0.85rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .loader-ring {
+            width:48px; height:48px; border:3px solid var(--border); border-top-color:var(--purple);
+            border-radius:50%; animation:spin 0.8s linear infinite; margin:40px auto;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .watch-container { display:grid; grid-template-columns:1fr 340px; gap:16px; }
+        @media(max-width:1000px){ .watch-container { grid-template-columns:1fr; } }
+        .player-wrapper { aspect-ratio:16/9; background:#000; border-radius:var(--radius); overflow:hidden; }
+        .player-wrapper iframe { width:100%; height:100%; border:none; }
+        .ep-sidebar { background:var(--card-bg); border-radius:var(--radius); padding:14px; max-height:70vh; overflow-y:auto; }
+        .ep-sidebar-item { display:block; padding:8px 12px; border-radius:var(--radius-sm); color:var(--text); text-decoration:none; }
+        .ep-sidebar-item.active, .ep-sidebar-item:hover { background:var(--purple); color:#fff; }
     </style>
 </head>
 <body>
 
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loader-ring"></div>
-        <p class="loader-text">Loading AnimeStream...</p>
-    </div>
-
-    <!-- Cursor Glow -->
-    <div class="cursor-glow" id="cursorGlow"></div>
-    <canvas id="particles-canvas"></canvas>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-left"><button class="icon-btn" id="menuBtn">☰</button></div>
+        <div class="nav-center"><a href="?page=home" class="nav-logo">A</a><span class="nav-title"><span>Anime</span>Stream</span></div>
+        <div class="nav-right"><button class="icon-btn" id="searchBtn">🔍</button></div>
+    </header>
 
     <!-- Sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div style="display:flex;align-items:center;gap:8px;">
-                <div class="nav-logo" style="width:32px;height:32px;font-size:14px;">A</div>
-                <strong>AnimeStream</strong>
-            </div>
-            <button class="sidebar-close" id="sidebarClose">✕</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <strong>AnimeStream</strong><button class="icon-btn" id="closeSidebar">✕</button>
         </div>
-        <a href="index.html" class="sidebar-link active" data-page="home">🏠 Home</a>
-        <a href="search.html" class="sidebar-link" data-page="search">🔍 Search</a>
-        <a href="schedule.html" class="sidebar-link" data-page="schedule">📅 Schedule</a>
-        <button class="sidebar-link" id="sidebarContinueWatching">▶️ Continue Watching</button>
-        <button class="sidebar-link" id="sidebarHistory">🕐 Watch History</button>
-        <a href="creator.html" class="sidebar-link" data-page="creator">👤 Creator</a>
+        <a href="?page=home" class="sidebar-link" data-page="home">🏠 Home</a>
+        <a href="?page=search" class="sidebar-link" data-page="search">🔍 Search</a>
+        <a href="?page=schedule" class="sidebar-link" data-page="schedule">📅 Schedule</a>
+        <a href="?page=creator" class="sidebar-link" data-page="creator">👤 Creator</a>
     </nav>
 
     <!-- Search Overlay -->
     <div class="search-overlay" id="searchOverlay">
         <div class="search-overlay-inner">
-            <div style="display:flex;justify-content:flex-end;"><button class="icon-btn" id="searchClose">✕</button></div>
+            <div style="display:flex;justify-content:flex-end;"><button class="icon-btn" id="closeSearch">✕</button></div>
             <div class="search-input-wrap"><span>🔍</span><input type="text" id="searchInput" placeholder="Search anime..." autocomplete="off"></div>
-            <div class="search-results-list" id="searchResultsList"></div>
+            <div id="searchResults" style="max-height:70vh;overflow-y:auto;"></div>
         </div>
     </div>
 
-    <!-- Navbar -->
-    <header class="navbar" id="navbar">
-        <div class="nav-left"><button class="icon-btn" id="menuToggle">☰</button></div>
-        <div class="nav-center"><a href="index.html" class="nav-logo">A</a><span class="nav-title"><span>Anime</span>Stream</span></div>
-        <div class="nav-right"><button class="icon-btn" id="searchToggle">🔍</button></div>
-    </header>
-
+    <!-- Main Content -->
     <main class="main-content" id="mainContent">
-        <!-- Pages injected dynamically -->
-        <div class="page-content active" id="page-home">
-            <div class="hero-slider" id="heroSlider">
-                <div class="hero-slide active"><div class="hero-info"><h2>Loading...</h2><a href="#" class="btn btn-primary">▶ Watch Now</a></div></div>
-                <div class="hero-dots" id="heroDots"></div>
-            </div>
-            <div class="section" id="continueWatchingSection" style="display:none;"><div class="section-header"><h2>▶️ Continue Watching</h2></div><div class="card-grid" id="continueWatchingGrid"></div></div>
-            <div class="section" id="watchHistorySection" style="display:none;"><div class="section-header"><h2>🕐 Watch History</h2><button class="btn btn-secondary" id="clearHistoryBtn">Clear</button></div><div class="card-grid" id="watchHistoryGrid"></div></div>
-            <div class="section"><div class="section-header"><h2>🆕 Latest Updates</h2></div><div class="card-grid" id="latestUpdatesGrid"></div></div>
-            <div class="section"><div class="section-header"><h2>🔥 Trending Anime</h2></div><div class="card-grid" id="trendingGrid"></div></div>
-            <div class="section"><div class="section-header"><h2>⭐ Popular Anime</h2></div><div class="card-grid" id="popularGrid"></div></div>
-            <div class="section"><div class="section-header"><h2>📅 Upcoming</h2></div><div class="card-grid" id="upcomingGrid"></div></div>
-            <div class="section"><div class="section-header"><h2>✅ Completed</h2></div><div class="card-grid" id="completedGrid"></div></div>
-        </div>
-        <div class="page-content" id="page-anime"></div>
-        <div class="page-content" id="page-watch"></div>
-        <div class="page-content" id="page-search">
-            <div class="search-input-wrap" style="margin-bottom:20px;"><input type="text" id="searchPageInput" placeholder="Search anime..."></div>
-            <div class="card-grid" id="searchResultsGrid"></div>
-            <button class="btn btn-secondary" id="loadMoreBtn" style="display:none;margin:16px auto;">Load More</button>
-        </div>
-        <div class="page-content" id="page-schedule"><h2>📅 Anime Schedule</h2><div class="schedule-grid" id="scheduleGrid"></div></div>
-        <div class="page-content" id="page-creator">
-            <div style="max-width:500px;margin:0 auto;background:var(--card-bg);border-radius:var(--radius-xl);padding:28px;text-align:center;">
-                <div class="nav-logo" style="margin:0 auto 14px;width:90px;height:90px;font-size:2.2rem;">A</div>
-                <h2>AnimeStream Creator</h2>
-                <p style="color:var(--muted);margin:8px 0;">Passionate anime fan building the ultimate streaming experience.</p>
-                <p style="font-size:0.8rem;">Version 1.0.0 • Built with 💜</p>
-                <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
-                    <a href="https://github.com" target="_blank" class="btn btn-primary">💻 GitHub</a>
-                    <a href="https://discord.com" target="_blank" class="btn btn-secondary">💬 Discord</a>
-                </div>
-            </div>
-        </div>
+        <div class="page active" id="page-home"></div>
+        <div class="page" id="page-anime"></div>
+        <div class="page" id="page-watch"></div>
+        <div class="page" id="page-search"></div>
+        <div class="page" id="page-schedule"></div>
+        <div class="page" id="page-creator"></div>
     </main>
-
-    <footer class="site-footer" style="text-align:center;padding:24px 16px;color:var(--muted);border-top:1px solid var(--border);margin-top:20px;">
-        <p>© 2026 AnimeStream • Powered by <a href="https://jikan.moe" target="_blank" style="color:var(--purple);">Jikan API</a></p>
-    </footer>
 
     <script>
         // ==================== CONFIG & UTILS ====================
-        const CONFIG = {
-            JIKAN_BASE: 'https://api.jikan.moe/v4',
-            STREAM_BASE: 'https://megaplay.buzz/stream/mal',
-            CACHE_PREFIX: 'as_',
-            HERO_ANIME_IDS: [5114, 9253, 32281, 16498, 1535, 30276, 38000, 21],
-            DEBOUNCE_DELAY: 350,
-            MAX_HISTORY: 50,
+        const C = {
+            JIKAN: 'https://api.jikan.moe/v4',
+            STREAM: 'https://megaplay.buzz/stream/mal',
+            CACHE: 'as_',
         };
         const $ = (s, c = document) => c.querySelector(s);
         const $$ = (s, c = document) => [...c.querySelectorAll(s)];
-        const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t);
-                t = setTimeout(() => fn(...a), ms); }; };
-        const getParam = (name) => new URLSearchParams(location.search).get(name);
-        const cacheGet = (k) => { try { const v = localStorage.getItem(CONFIG.CACHE_PREFIX + k); return v ? JSON.parse(v) :
-                null; } catch { return null; } };
-        const cacheSet = (k, d, ttl = 3600000) => { try { localStorage.setItem(CONFIG.CACHE_PREFIX + k, JSON.stringify({ d,
-                ts: Date.now(), ttl })); } catch {} };
-        const cacheValid = (k) => { const c = cacheGet(k); return c && (Date.now() - c.ts < c.ttl) ? c.d : null; };
-
-        const loadingScreen = $('#loadingScreen');
-        const toastContainer = document.createElement('div');
-        toastContainer.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;';
-        document.body.appendChild(toastContainer);
-
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = 'toast';
-            t.textContent = msg;
-            toastContainer.appendChild(t);
-            setTimeout(() => { t.style.opacity = '0';
-                t.style.transition = 'opacity 0.3s';
-                setTimeout(() => t.remove(), 300); }, 2500);
-        }
-
-        function hideLoadingScreen() {
-            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
-                loadingScreen.classList.add('hidden');
-                setTimeout(() => loadingScreen?.remove(), 500);
-            }
-        }
-        setTimeout(hideLoadingScreen, 4000); // fail‑safe
-
-        // ==================== STORAGE ====================
-        function getWatchHistory() { return cacheGet('watchHistory') || []; }
-
-        function addToWatchHistory(id, ep, type, title, poster) {
-            let h = getWatchHistory();
-            h = h.filter(e => !(e.id === id && e.ep === ep && e.type === type));
-            h.unshift({ id, ep, type, title, poster, ts: Date.now() });
-            if (h.length > CONFIG.MAX_HISTORY) h = h.slice(0, CONFIG.MAX_HISTORY);
-            cacheSet('watchHistory', h, 86400000 * 30);
-        }
-
-        function getContinueWatching() {
-            const seen = new Set();
-            return getWatchHistory().filter(e => { const k = `${e.id}-${e.type}`; if (seen.has(k)) return false;
-                seen.add(k); return true; }).slice(0, 10);
-        }
+        const getParam = (p) => new URLSearchParams(location.search).get(p);
+        const cache = (k, d, t = 3600000) => { try { localStorage.setItem(C.CACHE + k, JSON.stringify({ d, ts: Date.now(),
+                t })); } catch {} };
+        const cacheGet = (k) => { try { const v = localStorage.getItem(C.CACHE + k); if (v) { const o = JSON.parse(v); if (
+                    Date.now() - o.ts < o.t) return o.d; } } catch {} return null; };
 
         // ==================== API ====================
-        async function jikanFetch(endpoint) {
-            const ck = `jikan_${endpoint.replace(/[^a-z0-9]/gi, '_')}`;
-            const cached = cacheValid(ck);
+        async function api(url) {
+            const ck = `jikan_${url.replace(/[^a-z0-9]/g,'_')}`;
+            const cached = cacheGet(ck);
             if (cached) return cached;
             try {
-                const res = await fetch(CONFIG.JIKAN_BASE + endpoint);
-                if (res.status === 429) { await new Promise(r => setTimeout(r, 1500)); return jikanFetch(endpoint); }
-                if (!res.ok) throw new Error(`API ${res.status}`);
+                const res = await fetch(C.JIKAN + url);
+                if (res.status === 429) { await new Promise(r => setTimeout(r, 1500)); return api(url); }
+                if (!res.ok) throw new Error(res.status);
                 const data = await res.json();
-                cacheSet(ck, data, 300000);
+                cache(ck, data, 300000);
                 return data;
             } catch (e) { console.warn(e); return null; }
         }
-        async function getAnimeById(id) { return jikanFetch(`/anime/${id}/full`); }
-        async function getAnimeEpisodes(id) { return jikanFetch(`/anime/${id}/episodes`); }
-        async function getTopAnime(page = 1, filter = 'bypopularity') { return jikanFetch(
-                `/top/anime?page=${page}&filter=${filter}&limit=24`); }
-        async function getSeasonNow() { return jikanFetch('/seasons/now?limit=24'); }
-        async function getSeasonUpcoming() { return jikanFetch('/seasons/upcoming?limit=12'); }
-        async function searchAnime(q, page = 1, filters = {}) {
-            let ep = `/anime?q=${encodeURIComponent(q)}&page=${page}&limit=24&sfw=true`;
-            if (filters.type) ep += `&type=${filters.type}`;
-            if (filters.status) ep += `&status=${filters.status}`;
-            return jikanFetch(ep);
-        }
-        async function getSchedule(day) { return jikanFetch(`/schedules?filter=${day}&limit=10&sfw=true`); }
+        const getAnime = id => api(`/anime/${id}/full`);
+        const getEpisodes = id => api(`/anime/${id}/episodes`);
+        const getTop = (page = 1, filter = 'bypopularity') => api(`/top/anime?page=${page}&filter=${filter}&limit=24`);
+        const getSeasonNow = () => api('/seasons/now?limit=24');
+        const getSeasonUpcoming = () => api('/seasons/upcoming?limit=12');
+        const searchAnime = (q, page = 1) => api(`/anime?q=${encodeURIComponent(q)}&page=${page}&limit=24&sfw=true`);
 
-        // ==================== RENDER CARDS ====================
-        function createAnimeCard(anime, showEpBadge = false) {
-            const id = anime.mal_id;
-            const title = anime.title_english || anime.title;
-            const poster = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '';
-            const rating = anime.score || 'N/A';
-            const eps = anime.episodes || '?';
-            const card = document.createElement('a');
-            card.href = `anime.html?id=${id}`;
-            card.className = 'anime-card';
-            card.innerHTML = `
-            <div class="poster-wrap">
-              <img src="${poster}" alt="" loading="lazy" onerror="this.style.display='none'">
-              <span class="rating-badge">⭐ ${typeof rating==='number'?rating.toFixed(1):rating}</span>
-              ${showEpBadge && eps!=='?' ? `<span style="position:absolute;bottom:8px;left:8px;background:var(--purple);padding:3px 8px;border-radius:10px;font-size:0.68rem;">${eps} eps</span>` : ''}
-              <button class="quick-watch" onclick="event.preventDefault();event.stopPropagation();window.location.href='watch.html?id=${id}&ep=1&type=sub'">▶</button>
-            </div>
-            <div class="card-info"><span class="card-title">${title}</span><span style="font-size:0.7rem;color:var(--muted);">${anime.type||''} • ${eps} eps</span></div>`;
-            return card;
-        }
+        // ==================== STORAGE ====================
+        const getHistory = () => cacheGet('history') || [];
+        const addHistory = (id, ep, type, title, poster) => {
+            let h = getHistory();
+            h = h.filter(e => !(e.id == id && e.ep == ep && e.type == type));
+            h.unshift({ id, ep, type, title, poster, ts: Date.now() });
+            if (h.length > 50) h = h.slice(0, 50);
+            cache('history', h, 86400000 * 30);
+        };
 
-        function populateGrid(id, list, badge) {
-            const grid = $(id);
-            if (!grid) return;
-            grid.innerHTML = '';
-            if (!list?.length) { grid.innerHTML =
-                '<p style="grid-column:1/-1;text-align:center;color:var(--muted);">Nothing here</p>'; return; }
-            list.forEach(a => grid.appendChild(createAnimeCard(a, badge)));
+        // ==================== RENDER ====================
+        function animeCard(a, showEp = false) {
+            const id = a.mal_id;
+            const title = a.title_english || a.title;
+            const poster = a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '';
+            const eps = a.episodes || '?';
+            return `
+            <a href="?page=anime&id=${id}" class="anime-card">
+              <div class="poster-wrap">
+                <img src="${poster}" alt="" loading="lazy" onerror="this.style.display='none'">
+                <span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);padding:3px 8px;border-radius:14px;font-size:0.7rem;color:#fbbf24;">⭐ ${a.score||'?'}</span>
+                ${showEp && eps!=='?' ? `<span style="position:absolute;bottom:8px;left:8px;background:var(--purple);padding:3px 8px;border-radius:10px;font-size:0.68rem;">${eps} eps</span>` : ''}
+                <button class="btn btn-primary" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;padding:0;justify-content:center;opacity:0;transition:opacity 0.3s;" onclick="event.preventDefault();event.stopPropagation();window.location.href='?page=watch&id=${id}&ep=1&type=sub'">▶</button>
+              </div>
+              <div class="card-info"><span class="card-title">${title}</span></div>
+            </a>`;
         }
 
-        // ==================== HERO ====================
-        let heroCurrent = 0;
-        const heroData = [];
-        async function initHero() {
-            for (const id of CONFIG.HERO_ANIME_IDS.slice(0, 5)) { const r = await getAnimeById(id); if (r?.data) heroData
-                    .push(r.data); }
-            if (!heroData.length) { const r = await getTopAnime(); if (r?.data) heroData.push(...r.data.slice(0, 5)); }
+        function grid(id, list, badge) {
+            const el = $(id);
+            if (!el) return;
+            el.innerHTML = list?.length ? list.map(a => animeCard(a, badge)).join('') :
+                '<p style="color:var(--muted);text-align:center;padding:20px;">Nothing here</p>';
+        }
+
+        // ==================== PAGES ====================
+        function showPage(name) {
+            $$('.page').forEach(p => p.classList.remove('active'));
+            const page = $(`#page-${name}`);
+            if (page) page.classList.add('active');
+            $$('.sidebar-link').forEach(l => l.classList.remove('active'));
+            const link = $(`.sidebar-link[data-page="${name}"]`);
+            if (link) link.classList.add('active');
+        }
+
+        async function loadHome() {
+            showPage('home');
+            const home = $('#page-home');
+            home.innerHTML = '<div class="loader-ring"></div>';
+            const [top, now, upcoming] = await Promise.all([getTop(), getSeasonNow(), getSeasonUpcoming()]);
+            home.innerHTML = `
+            <div class="hero-slider" id="heroSlider"></div>
+            <h2 style="margin:16px 0;">🔥 Trending</h2><div class="card-grid" id="trendingGrid"></div>
+            <h2 style="margin:16px 0;">🆕 Latest Updates</h2><div class="card-grid" id="latestGrid"></div>
+            <h2 style="margin:16px 0;">⭐ Popular</h2><div class="card-grid" id="popularGrid"></div>
+            <h2 style="margin:16px 0;">📅 Upcoming</h2><div class="card-grid" id="upcomingGrid"></div>
+          `;
+            if (top?.data) {
+                grid('#trendingGrid', top.data.slice(0, 12), true);
+                grid('#popularGrid', top.data.slice(6, 18), true);
+            }
+            if (now?.data) grid('#latestGrid', now.data.slice(0, 12), true);
+            if (upcoming?.data) grid('#upcomingGrid', upcoming.data.slice(0, 8), false);
+            // Hero
+            const heroIds = [5114, 9253, 32281, 16498];
+            const heroData = [];
+            for (const id of heroIds) { const r = await getAnime(id); if (r?.data) heroData.push(r.data); }
+            if (!heroData.length && top?.data) heroData.push(...top.data.slice(0, 3));
             const slider = $('#heroSlider');
             slider.innerHTML = '';
             heroData.forEach((a, i) => {
                 const slide = document.createElement('div');
                 slide.className = `hero-slide${i===0?' active':''}`;
-                slide.style.backgroundImage = `url(${a.images?.jpg?.large_image_url||a.images?.jpg?.image_url||''})`;
-                slide.innerHTML = `<div class="hero-info"><h2>${a.title_english||a.title}</h2><div class="meta-tags">${[a.type,a.status].filter(Boolean).map(t=>`<span>${t}</span>`).join('')}</div><p>${(a.synopsis||'').slice(0,200)}...</p><a href="anime.html?id=${a.mal_id}" class="btn btn-primary">▶ Watch Now</a></div>`;
+                slide.style.backgroundImage = `url(${a.images?.jpg?.large_image_url||''})`;
+                slide.innerHTML = `<div class="hero-info"><h2>${a.title_english||a.title}</h2><a href="?page=anime&id=${a.mal_id}" class="btn btn-primary">▶ Watch Now</a></div>`;
                 slider.appendChild(slide);
             });
-            const dots = $('#heroDots');
-            dots.innerHTML = heroData.map((_, i) =>
-                `<button class="hero-dot${i===0?' active':''}" data-i="${i}"></button>`).join('');
-            dots.querySelectorAll('.hero-dot').forEach(b => b.addEventListener('click', () => goHero(parseInt(b.dataset
-                .i))));
-            setInterval(() => { heroCurrent = (heroCurrent + 1) % heroData.length;
-                goHero(heroCurrent); }, 5000);
+            let cur = 0;
+            setInterval(() => { cur = (cur + 1) % heroData.length;
+                $$('.hero-slide').forEach((s, i) => s.classList.toggle('active', i === cur)); }, 5000);
         }
 
-        function goHero(i) {
-            $$('.hero-slide').forEach((s, idx) => s.classList.toggle('active', idx === i));
-            $$('.hero-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
-            heroCurrent = i;
-        }
-
-        // ==================== HOME ====================
-        async function loadHome() {
-            const [top, now, up] = await Promise.all([getTopAnime(), getSeasonNow(), getSeasonUpcoming()]);
-            if (top?.data) { populateGrid('#trendingGrid', top.data.slice(0, 12), true);
-                populateGrid('#popularGrid', top.data.slice(6, 18), true); }
-            if (now?.data) populateGrid('#latestUpdatesGrid', now.data.slice(0, 12), true);
-            if (up?.data) populateGrid('#upcomingGrid', up.data.slice(0, 8), false);
-            const comp = await getTopAnime(1, 'favorite');
-            if (comp?.data) populateGrid('#completedGrid', comp.data.filter(a => a.status === 'Finished Airing').slice(0, 8),
-                true);
-            loadContinueWatching();
-            loadWatchHistory();
-        }
-
-        function loadContinueWatching() {
-            const cw = getContinueWatching();
-            const s = $('#continueWatchingSection'),
-                g = $('#continueWatchingGrid');
-            if (!cw.length) { s.style.display = 'none'; return; }
-            s.style.display = 'block';
-            g.innerHTML = '';
-            cw.forEach(e => {
-                const card = document.createElement('a');
-                card.className = 'anime-card';
-                card.href = `watch.html?id=${e.id}&ep=${e.ep}&type=${e.type}`;
-                card.innerHTML = `<div class="poster-wrap"><img src="${e.poster||''}" onerror="this.style.display='none'"><span style="position:absolute;bottom:8px;left:8px;background:var(--purple);padding:3px 8px;border-radius:10px;font-size:0.68rem;">Ep ${e.ep}</span></div><div class="card-info"><span class="card-title">${e.title}</span></div>`;
-                g.appendChild(card);
-            });
-        }
-
-        function loadWatchHistory() {
-            const h = getWatchHistory();
-            const s = $('#watchHistorySection'),
-                g = $('#watchHistoryGrid');
-            if (!h.length) { s.style.display = 'none'; return; }
-            s.style.display = 'block';
-            g.innerHTML = '';
-            h.slice(0, 12).forEach(e => {
-                const card = document.createElement('a');
-                card.className = 'anime-card';
-                card.href = `watch.html?id=${e.id}&ep=${e.ep}&type=${e.type}`;
-                card.innerHTML = `<div class="poster-wrap"><img src="${e.poster||''}" onerror="this.style.display='none'"><span style="position:absolute;bottom:8px;left:8px;background:var(--purple);padding:3px 8px;border-radius:10px;font-size:0.68rem;">Ep ${e.ep}</span></div><div class="card-info"><span class="card-title">${e.title}</span><span style="font-size:0.65rem;color:var(--muted);">${new Date(e.ts).toLocaleDateString()}</span></div>`;
-                g.appendChild(card);
-            });
-        }
-
-        // ==================== ANIME DETAIL ====================
-        async function loadAnimeDetail(id) {
+        async function loadAnime(id) {
+            showPage('anime');
             const page = $('#page-anime');
-            page.innerHTML =
-                '<div style="text-align:center;padding:60px;"><div class="loader-ring"></div></div>';
-            page.classList.add('active');
-            $$('.page-content').forEach(p => { if (p !== page) p.classList.remove('active'); });
-            try {
-                const [animeRes, epsRes] = await Promise.all([getAnimeById(id), getAnimeEpisodes(id)]);
-                const a = animeRes?.data;
-                if (!a) { page.innerHTML = '<p style="text-align:center;padding:40px;">Anime not found.</p>'; return; }
-                const episodes = epsRes?.data || [];
-                page.innerHTML = `
-              <div style="position:relative;border-radius:var(--radius-xl);overflow:hidden;min-height:320px;background:url(${a.images?.jpg?.large_image_url||''}) center/cover;display:flex;align-items:flex-end;padding:24px;margin-bottom:20px;">
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.4) 50%);"></div>
-                <div style="position:relative;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
-                  <img src="${a.images?.jpg?.large_image_url||''}" style="width:140px;border-radius:var(--radius);box-shadow:var(--shadow-lg);">
-                  <div>
-                    <h1>${a.title_english||a.title}</h1>
-                    <p style="color:var(--muted);">${a.title_japanese||''}</p>
-                    <div style="display:flex;gap:8px;margin:6px 0;">${[a.type,a.status,`⭐${a.score}`].filter(Boolean).map(t=>`<span style="background:rgba(255,255,255,0.1);padding:4px 10px;border-radius:14px;font-size:0.72rem;">${t}</span>`).join('')}</div>
-                    <div style="display:flex;gap:8px;"><a href="watch.html?id=${a.mal_id}&ep=1&type=sub" class="btn btn-primary">▶ Sub</a><a href="watch.html?id=${a.mal_id}&ep=1&type=dub" class="btn btn-secondary">🎙 Dub</a></div>
-                  </div>
+            page.innerHTML = '<div class="loader-ring"></div>';
+            const [animeRes, epsRes] = await Promise.all([getAnime(id), getEpisodes(id)]);
+            const anime = animeRes?.data;
+            if (!anime) { page.innerHTML = '<p style="text-align:center;padding:40px;">Anime not found.</p>'; return; }
+            const episodes = epsRes?.data || [];
+            page.innerHTML = `
+            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+              <img src="${anime.images?.jpg?.large_image_url||''}" style="width:200px;border-radius:var(--radius);">
+              <div style="flex:1;">
+                <h1>${anime.title_english||anime.title}</h1>
+                <p style="color:var(--muted);">${anime.synopsis?.slice(0,300)||''}...</p>
+                <div style="display:flex;gap:8px;margin:12px 0;">
+                  <a href="?page=watch&id=${id}&ep=1&type=sub" class="btn btn-primary">▶ Watch Sub</a>
+                  <a href="?page=watch&id=${id}&ep=1&type=dub" class="btn btn-secondary">🎙 Watch Dub</a>
+                </div>
+                <div style="margin-top:16px;">
+                  <strong>Episodes:</strong>
+                  <div style="max-height:300px;overflow-y:auto;">${episodes.map(e=>`<a href="?page=watch&id=${id}&ep=${e.mal_id||1}&type=sub" style="display:block;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text);">Episode ${e.mal_id||1}</a>`).join('')}</div>
                 </div>
               </div>
-              <p>${a.synopsis||''}</p>
-              <div style="margin-top:16px;"><strong>Episodes:</strong><div style="max-height:300px;overflow-y:auto;">${episodes.slice(0,30).map(e=>`<a href="watch.html?id=${a.mal_id}&ep=${e.mal_id||1}&type=sub" style="display:block;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text);">Episode ${e.mal_id||1}</a>`).join('')}</div></div>`;
-                document.title = `${a.title_english||a.title} - AnimeStream`;
-            } catch (e) { page.innerHTML =
-                '<p style="text-align:center;padding:40px;">Error loading anime details.</p>'; }
+            </div>`;
         }
 
-        // ==================== WATCH PAGE (FIXED) ====================
-        async function loadWatchPage(id, ep, type) {
+        async function loadWatch(id, ep, type) {
+            showPage('watch');
             const page = $('#page-watch');
-            // Show loading
-            page.innerHTML =
-                '<div style="text-align:center;padding:60px;"><div class="loader-ring"></div><p>Loading player...</p></div>';
-            page.classList.add('active');
-            $$('.page-content').forEach(p => { if (p !== page) p.classList.remove('active'); });
-            window.scrollTo(0, 0);
-
-            // Fail‑safe: if still loading after 8 seconds, show error
-            const failTimer = setTimeout(() => {
-                if (page.innerHTML.includes('loader-ring')) {
-                    page.innerHTML =
-                        `<div style="text-align:center;padding:40px;"><p style="color:var(--muted);">Something is taking longer than expected.</p><button class="btn btn-primary" onclick="location.reload()">Retry</button></div>`;
-                }
-            }, 8000);
-
+            page.innerHTML = '<div class="loader-ring"></div>';
             try {
-                if (!id || !ep) { page.innerHTML =
-                    '<p style="text-align:center;padding:40px;">Invalid anime or episode.</p>'; return; }
-
-                const [animeRes, epsRes] = await Promise.all([getAnimeById(id), getAnimeEpisodes(id)]);
+                const [animeRes, epsRes] = await Promise.all([getAnime(id), getEpisodes(id)]);
                 const anime = animeRes?.data;
+                if (!anime) { page.innerHTML = '<p style="text-align:center;padding:40px;">Anime not found.</p>'; return; }
                 const allEps = epsRes?.data || [];
-                const totalEps = anime?.episodes || allEps.length || 1;
-                const streamUrl = `${CONFIG.STREAM_BASE}/${id}/${ep}/${type}`;
-                const title = anime?.title_english || anime?.title || 'Anime';
-                const poster = anime?.images?.jpg?.image_url || '';
-
-                // Save history
-                addToWatchHistory(parseInt(id), parseInt(ep), type, title, poster);
-                document.title = `Watch ${title} Ep ${ep} - AnimeStream`;
-
-                // Build episode list
+                const totalEps = anime.episodes || allEps.length || 1;
+                const stream = `${C.STREAM}/${id}/${ep}/${type}`;
+                const title = anime.title_english || anime.title;
+                addHistory(parseInt(id), parseInt(ep), type, title, anime.images?.jpg?.image_url || '');
                 let epList = '';
                 for (let i = 1; i <= Math.min(totalEps, 50); i++) {
                     epList +=
-                        `<a href="watch.html?id=${id}&ep=${i}&type=${type}" class="ep-sidebar-item${i===parseInt(ep)?' active':''}">Episode ${i}</a>`;
+                        `<a href="?page=watch&id=${id}&ep=${i}&type=${type}" class="ep-sidebar-item${i===parseInt(ep)?' active':''}">Episode ${i}</a>`;
                 }
-
                 page.innerHTML = `
-              <div class="watch-container">
-                <div>
-                  <div class="player-wrapper" id="playerWrapper">
-                    <iframe src="${streamUrl}" allowfullscreen id="playerIframe"></iframe>
+                <div class="watch-container">
+                  <div>
+                    <div class="player-wrapper"><iframe src="${stream}" allowfullscreen></iframe></div>
+                    <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+                      <strong>${title} Ep ${ep}</strong>
+                      <button class="btn btn-secondary" onclick="location.href='?page=watch&id=${id}&ep=${ep}&type=${type==='sub'?'dub':'sub'}'">Switch to ${type==='sub'?'DUB':'SUB'}</button>
+                    </div>
+                    <div style="margin-top:8px;display:flex;gap:8px;">
+                      ${parseInt(ep)>1?`<a href="?page=watch&id=${id}&ep=${parseInt(ep)-1}&type=${type}" class="btn btn-secondary">← Prev</a>`:''}
+                      ${parseInt(ep)<totalEps?`<a href="?page=watch&id=${id}&ep=${parseInt(ep)+1}&type=${type}" class="btn btn-primary">Next →</a>`:''}
+                    </div>
                   </div>
-                  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center;">
-                    <span style="font-weight:700;">${title} Ep ${ep}</span>
-                    <button id="toggleTypeBtn" class="btn btn-secondary" style="padding:6px 14px;font-size:0.8rem;">Switch to ${type==='sub'?'DUB':'SUB'}</button>
-                    <a href="anime.html?id=${id}" class="btn btn-secondary" style="padding:6px 14px;">📋 Details</a>
-                  </div>
-                  <div style="margin-top:8px;display:flex;gap:8px;">
-                    ${parseInt(ep)>1?`<a href="watch.html?id=${id}&ep=${parseInt(ep)-1}&type=${type}" class="btn btn-secondary">← Prev</a>`:''}
-                    ${parseInt(ep)<totalEps?`<a href="watch.html?id=${id}&ep=${parseInt(ep)+1}&type=${type}" class="btn btn-primary">Next →</a>`:''}
-                  </div>
-                </div>
-                <div class="ep-sidebar">
-                  <h3>📺 Episodes</h3>
-                  ${epList}
-                  ${totalEps>50?`<p style="text-align:center;font-size:0.8rem;">+${totalEps-50} more</p>`:''}
-                </div>
-              </div>`;
-
-                // Toggle sub/dub
-                $('#toggleTypeBtn')?.addEventListener('click', () => {
-                    window.location.href =
-                        `watch.html?id=${id}&ep=${ep}&type=${type==='sub'?'dub':'sub'}`;
-                });
-            } catch (error) {
-                console.error('Watch page error:', error);
-                page.innerHTML =
-                    `<div style="text-align:center;padding:40px;"><p style="color:var(--muted);">Failed to load the watch page. The anime may be unavailable.</p><button class="btn btn-primary" onclick="history.back()">Go Back</button></div>`;
-            } finally {
-                clearTimeout(failTimer);
+                  <div class="ep-sidebar"><h3>📺 Episodes</h3>${epList}</div>
+                </div>`;
+            } catch (e) {
+                page.innerHTML = `<div style="text-align:center;padding:40px;"><p>Failed to load the watch page. The anime may be unavailable.</p><button class="btn btn-primary" onclick="history.back()">Go Back</button></div>`;
             }
         }
 
-        // ==================== SEARCH ====================
-        let searchPage = 1,
-            searchQuery = '',
-            searchFilters = {};
-        async function performSearch(q, page = 1, append = false) {
-            const grid = $('#searchResultsGrid');
-            const btn = $('#loadMoreBtn');
-            if (!append) { grid.innerHTML =
-                '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">Searching...</p>';
-                searchPage = 1; }
-            const res = await searchAnime(q, page, searchFilters);
-            if (!append) grid.innerHTML = '';
-            if (res?.data?.length) {
-                res.data.forEach(a => grid.appendChild(createAnimeCard(a, true)));
-                btn.style.display = res.pagination?.has_next_page ? 'block' : 'none';
-                searchPage = page;
-            } else if (!append) { grid.innerHTML =
-                '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">No results.</p>';
-                btn.style.display = 'none'; }
-            if (!res?.pagination?.has_next_page) btn.style.display = 'none';
+        async function loadSearch(q = '') {
+            showPage('search');
+            const page = $('#page-search');
+            page.innerHTML = `
+            <div class="search-input-wrap" style="margin-bottom:20px;"><input type="text" id="searchPageInput" placeholder="Search anime..." value="${q}"></div>
+            <div class="card-grid" id="searchGrid"></div>
+            <button class="btn btn-secondary" id="loadMore" style="display:none;margin:16px auto;">Load More</button>`;
+            let pageNum = 1;
+            async function doSearch(query, page = 1, append = false) {
+                const res = await searchAnime(query, page);
+                const grid = $('#searchGrid');
+                if (!append) grid.innerHTML = '';
+                if (res?.data?.length) {
+                    res.data.forEach(a => grid.insertAdjacentHTML('beforeend', animeCard(a, true)));
+                    $('#loadMore').style.display = res.pagination?.has_next_page ? 'block' : 'none';
+                } else if (!append) grid.innerHTML = '<p style="color:var(--muted);text-align:center;">No results</p>';
+            }
+            if (q) doSearch(q);
+            $('#searchPageInput').addEventListener('input', function() {
+                const v = this.value;
+                if (v.length >= 2) { pageNum = 1;
+                    doSearch(v); }
+            });
+            $('#loadMore').addEventListener('click', () => { pageNum++;
+                doSearch($('#searchPageInput').value, pageNum, true); });
         }
 
-        // ==================== SCHEDULE ====================
         async function loadSchedule() {
-            const grid = $('#scheduleGrid');
-            if (!grid) return;
-            grid.innerHTML = '<p style="color:var(--muted);">Loading schedule...</p>';
+            showPage('schedule');
+            const page = $('#page-schedule');
+            page.innerHTML = '<div class="loader-ring"></div>';
             const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const all = await Promise.all(days.map(getSchedule));
-            grid.innerHTML = '';
+            const all = await Promise.all(days.map(d => api(`/schedules?filter=${d}&limit=6&sfw=true`)));
+            page.innerHTML = '<div class="card-grid" id="schedGrid"></div>';
+            const grid = $('#schedGrid');
             days.forEach((d, i) => {
                 const card = document.createElement('div');
                 card.style.cssText =
                     'background:var(--card-bg);border-radius:var(--radius);padding:14px;border:1px solid var(--border);';
-                card.innerHTML = `<h3 style="color:var(--purple);">📅 ${d.charAt(0).toUpperCase()+d.slice(1)}</h3>`;
-                (all[i]?.data || []).slice(0, 6).forEach(a => {
-                    const r = document.createElement('div');
-                    r.style.cssText =
+                card.innerHTML = `<h3 style="color:var(--purple);">${d.charAt(0).toUpperCase()+d.slice(1)}</h3>`;
+                (all[i]?.data || []).forEach(a => {
+                    const item = document.createElement('div');
+                    item.style.cssText =
                         'display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer;';
-                    r.innerHTML =
-                        `<img src="${a.images?.jpg?.image_url||''}" style="width:36px;height:48px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'"><div><strong style="font-size:0.78rem;">${a.title_english||a.title}</strong><br><span style="font-size:0.7rem;color:var(--muted);">⭐${a.score||'?'}</span></div>`;
-                    r.addEventListener('click', () => location.href = `anime.html?id=${a.mal_id}`);
-                    card.appendChild(r);
+                    item.innerHTML =
+                        `<img src="${a.images?.jpg?.image_url||''}" style="width:36px;height:48px;border-radius:6px;object-fit:cover;"><div><strong>${a.title_english||a.title}</strong><br><span style="color:var(--muted);font-size:0.7rem;">⭐${a.score||'?'}</span></div>`;
+                    item.addEventListener('click', () => location.href =
+                        `?page=anime&id=${a.mal_id}`);
+                    card.appendChild(item);
                 });
                 grid.appendChild(card);
             });
         }
 
-        // ==================== ROUTING ====================
-        function showPage(id) { $$('.page-content').forEach(p => p.classList.remove('active'));
-            $('#page-' + id)?.classList.add('active'); }
+        function loadCreator() {
+            showPage('creator');
+            $('#page-creator').innerHTML = `
+            <div style="max-width:500px;margin:0 auto;text-align:center;background:var(--card-bg);border-radius:var(--radius);padding:28px;">
+              <div class="nav-logo" style="margin:0 auto 14px;width:90px;height:90px;font-size:2.2rem;">A</div>
+              <h2>AnimeStream Creator</h2>
+              <p style="color:var(--muted);">Version 1.0 · Built with 💜</p>
+              <div style="margin-top:14px;"><a href="https://github.com" target="_blank" class="btn btn-primary">💻 GitHub</a></div>
+            </div>`;
+        }
 
-        function handleRoute() {
-            const path = location.pathname.split('/').pop() || 'index.html';
+        // ==================== ROUTER ====================
+        function route() {
+            const page = getParam('page') || 'home';
             const id = getParam('id');
             const ep = getParam('ep');
             const type = getParam('type') || 'sub';
-            if (path.includes('anime') && id) loadAnimeDetail(id);
-            else if (path.includes('watch') && id && ep) loadWatchPage(id, ep, type);
-            else if (path.includes('search')) { showPage('search'); if (getParam('q')) { const q = getParam('q');
-                    $('#searchPageInput').value = q;
-                    searchQuery = q;
-                    performSearch(q); } }
-            else if (path.includes('schedule')) { showPage('schedule');
-                loadSchedule(); } else if (path.includes('creator')) showPage('creator');
-            else { showPage('home');
-                loadHome();
-                initHero(); }
+            const q = getParam('q');
+            if (page === 'anime' && id) loadAnime(id);
+            else if (page === 'watch' && id && ep) loadWatch(id, ep, type);
+            else if (page === 'search') loadSearch(q);
+            else if (page === 'schedule') loadSchedule();
+            else if (page === 'creator') loadCreator();
+            else loadHome();
         }
 
-        // ==================== EVENT LISTENERS ====================
-        document.getElementById('menuToggle').onclick = () => { document.getElementById('sidebar').classList.add(
-                'active');
-            document.getElementById('sidebarOverlay').classList.add('active'); };
-        document.getElementById('sidebarClose').onclick = () => { document.getElementById('sidebar').classList.remove(
-                'active');
-            document.getElementById('sidebarOverlay').classList.remove('active'); };
-        document.getElementById('sidebarOverlay').onclick = () => { document.getElementById('sidebar').classList.remove(
-                'active');
-            document.getElementById('sidebarOverlay').classList.remove('active'); };
-        document.getElementById('searchToggle').onclick = () => { document.getElementById('searchOverlay').classList.add(
-                'active');
-            document.getElementById('searchInput').focus(); };
-        document.getElementById('searchClose').onclick = () => { document.getElementById('searchOverlay').classList.remove(
-                'active'); };
-        document.getElementById('searchInput').addEventListener('input', debounce(function() {
+        // ==================== UI EVENTS ====================
+        document.getElementById('menuBtn').onclick = () => {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        };
+        document.getElementById('closeSidebar').onclick = () => {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        };
+        document.getElementById('sidebarOverlay').onclick = () => {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        };
+        document.getElementById('searchBtn').onclick = () => {
+            document.getElementById('searchOverlay').classList.add('active');
+            document.getElementById('searchInput').focus();
+        };
+        document.getElementById('closeSearch').onclick = () => {
+            document.getElementById('searchOverlay').classList.remove('active');
+        };
+        document.getElementById('searchInput').addEventListener('input', function() {
             const q = this.value;
-            const list = document.getElementById('searchResultsList');
-            if (q.length < 2) { list.innerHTML =
-                '<p style="color:var(--muted);text-align:center;padding:20px;">Type to search...</p>'; return; }
-            list.innerHTML = '<p style="color:var(--muted);text-align:center;">Searching...</p>';
-            searchAnime(q, 1).then(res => {
-                list.innerHTML = '';
-                if (res?.data?.length) {
-                    res.data.slice(0, 10).forEach(a => {
-                        const el = document.createElement('a');
-                        el.className = 'search-result-item';
-                        el.href = `anime.html?id=${a.mal_id}`;
-                        el.innerHTML =
-                            `<img src="${a.images?.jpg?.image_url||''}" style="width:48px;height:64px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"><div><strong>${a.title_english||a.title}</strong><br><span style="font-size:0.78rem;color:var(--muted);">${a.type||''} ⭐${a.score||'?'}</span></div>`;
-                        list.appendChild(el);
+            const resDiv = document.getElementById('searchResults');
+            if (q.length < 2) { resDiv.innerHTML = ''; return; }
+            resDiv.innerHTML = '<p style="color:var(--muted);text-align:center;">Searching...</p>';
+            searchAnime(q, 1).then(r => {
+                resDiv.innerHTML = '';
+                if (r?.data?.length) {
+                    r.data.slice(0, 8).forEach(a => {
+                        resDiv.innerHTML +=
+                            `<a href="?page=anime&id=${a.mal_id}" class="search-result-item" style="display:flex;gap:12px;padding:10px;color:var(--text);text-decoration:none;border-radius:8px;"><img src="${a.images?.jpg?.image_url||''}" style="width:48px;height:64px;border-radius:8px;object-fit:cover;"><div><strong>${a.title_english||a.title}</strong><br><span style="color:var(--muted);">⭐${a.score||'?'}</span></div></a>`;
                     });
-                } else list.innerHTML =
-                    '<p style="color:var(--muted);text-align:center;">No results</p>';
+                } else { resDiv.innerHTML = '<p style="color:var(--muted);">No results</p>'; }
             });
-        }, CONFIG.DEBOUNCE_DELAY));
-        document.getElementById('clearHistoryBtn')?.addEventListener('click', () => { cacheSet('watchHistory', []);
-            loadWatchHistory(); });
-        document.getElementById('loadMoreBtn')?.addEventListener('click', () => { if (searchQuery) performSearch(
-                searchQuery, searchPage + 1, true); });
-        document.getElementById('searchPageInput')?.addEventListener('input', debounce(function() { searchQuery = this
-                .value; if (searchQuery.length >= 2) performSearch(searchQuery); }, CONFIG.DEBOUNCE_DELAY));
-
-        // Particles
-        (function initParticles() {
-            const canvas = document.getElementById('particles-canvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            function resize() { canvas.width = innerWidth;
-                canvas.height = innerHeight; }
-            resize();
-            addEventListener('resize', resize);
-            class P {
-                constructor() { this.reset(); }
-                reset() { this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.s = Math.random() * 2 + 0.5;
-                    this.vx = (Math.random() - 0.5) * 0.4;
-                    this.vy = (Math.random() - 0.5) * 0.4;
-                    this.o = Math.random() * 0.5 + 0.1; }
-                update() { this.x += this.vx;
-                    this.y += this.vy; if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas
-                        .height) this.reset(); }
-                draw() { ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(139,92,246,${this.o})`;
-                    ctx.fill(); }
-            }
-            for (let i = 0; i < 50; i++) particles.push(new P());
-            (function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update();
-                    p.draw(); });
-                requestAnimationFrame(animate); })();
-        })();
-
-        // Cursor glow
-        document.addEventListener('mousemove', e => { const g = document.getElementById('cursorGlow');
-            g.style.left = e.clientX + 'px';
-            g.style.top = e.clientY + 'px'; });
+        });
 
         // Start
-        document.addEventListener('DOMContentLoaded', () => {
-            try { handleRoute(); } catch (e) { console.error(e); } finally { hideLoadingScreen(); }
-        });
-        window.addEventListener('popstate', handleRoute);
+        window.addEventListener('popstate', route);
+        document.addEventListener('DOMContentLoaded', route);
     </script>
 </body>
 </html>
