@@ -1329,7 +1329,7 @@
     ============================================================ -->
     <div id="loader" aria-hidden="true">
         <div class="spinner"></div>
-        <p>Loading Anime</p>
+        <p>LOADING ANIME</p>
     </div>
 
     <!-- ============================================================
@@ -2243,74 +2243,80 @@
                 // ============================================================
                 // ROUTER
                 // ============================================================
-                router() {
-                    const path = window.location.pathname;
-                    const params = new URLSearchParams(window.location.search);
-                    const id = params.get('id');
-                    const ep = params.get('ep') || '1';
-                    const type = params.get('type') || 'sub';
-                    const q = params.get('q') || '';
+                async router() {
+                    const loader = document.getElementById('loader');
+                    try {
+                        // Handle GitHub Pages subfolder routing (e.g., /HindiAnime4ALL/)
+                        const path = window.location.pathname.replace(/\/$/, '');
+                        const repoName = 'HindiAnime4ALL';
+                        let route = path;
 
-                    // Show loader
-                    document.getElementById('loader')?.classList.remove('hidden');
+                        if (path.includes(repoName)) {
+                            // Extract the part after the repo name
+                            const parts = path.split(repoName);
+                            route = parts.length > 1 ? parts[1] : '/';
+                            if (route === '') route = '/';
+                        }
 
-                    // Determine which page to render
-                    const render = async () => {
-                        try {
-                            if (path === '/' || path === '/index.html') {
-                                const [trending, upcoming] = await Promise.all([
-                                    Utils.getTrending(1),
-                                    Utils.getUpcoming()
-                                ]);
-                                await UI.renderHome({ trending, upcoming });
-                            } else if (path === '/anime.html' && id) {
-                                await UI.renderAnimeDetails(id);
-                            } else if (path === '/watch.html' && id) {
-                                await UI.renderWatch(id, ep, type);
-                            } else if (path === '/search.html') {
-                                await UI.renderSearch(q);
-                            } else if (path === '/schedule.html') {
-                                await UI.renderSchedule();
-                            } else if (path === '/creator.html') {
-                                UI.renderCreator();
-                            } else {
-                                // 404 fallback
-                                this.mainEl.innerHTML = `
-                                    <div style="padding:80px 0;text-align:center;color:var(--muted);">
-                                        <div style="font-size:4rem;margin-bottom:16px;">404</div>
-                                        <h2 style="font-weight:700;">Page not found</h2>
-                                        <p style="margin-top:8px;">The page you're looking for doesn't exist.</p>
-                                        <a href="/" style="display:inline-block;margin-top:20px;padding:10px 28px;border-radius:30px;background:var(--purple);color:#fff;font-weight:600;">Go Home</a>
-                                    </div>
-                                `;
-                            }
-                        } catch (e) {
-                            console.error('Router error:', e);
-                            this.mainEl.innerHTML = `
+                        const params = new URLSearchParams(window.location.search);
+                        const id = params.get('id');
+                        const ep = params.get('ep') || '1';
+                        const type = params.get('type') || 'sub';
+                        const q = params.get('q') || '';
+
+                        console.log('Route:', route, 'Params:', { id, ep, type, q });
+
+                        if (route === '/' || route === '/index.html') {
+                            const [trending, upcoming] = await Promise.all([
+                                Utils.getTrending(1),
+                                Utils.getUpcoming()
+                            ]);
+                            await UI.renderHome({ trending, upcoming });
+                        } else if (route === '/anime.html' && id) {
+                            await UI.renderAnimeDetails(id);
+                        } else if (route === '/watch.html' && id) {
+                            await UI.renderWatch(id, ep, type);
+                        } else if (route === '/search.html') {
+                            await UI.renderSearch(q);
+                        } else if (route === '/schedule.html') {
+                            await UI.renderSchedule();
+                        } else if (route === '/creator.html') {
+                            UI.renderCreator();
+                        } else {
+                            // 404 fallback
+                            UI.mainEl.innerHTML = `
                                 <div style="padding:80px 0;text-align:center;color:var(--muted);">
-                                    <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
-                                    <h2 style="font-weight:700;">Something went wrong</h2>
-                                    <p style="margin-top:8px;">Please try refreshing the page.</p>
-                                    <button onclick="location.reload()" style="display:inline-block;margin-top:20px;padding:10px 28px;border-radius:30px;background:var(--purple);color:#fff;font-weight:600;">Refresh</button>
+                                    <div style="font-size:4rem;margin-bottom:16px;">404</div>
+                                    <h2 style="font-weight:700;">Page not found</h2>
+                                    <p style="margin-top:8px;">The page you're looking for doesn't exist.</p>
+                                    <a href="/" style="display:inline-block;margin-top:20px;padding:10px 28px;border-radius:30px;background:var(--purple);color:#fff;font-weight:600;">Go Home</a>
                                 </div>
                             `;
                         }
-
-                        // Hide loader
-                        document.getElementById('loader')?.classList.add('hidden');
-
-                        // Attach card click events for anime cards
-                        this.mainEl.querySelectorAll('.anime-card').forEach(el => {
+                    } catch (e) {
+                        console.error('Router error:', e);
+                        UI.mainEl.innerHTML = `
+                            <div style="padding:80px 0;text-align:center;color:var(--muted);">
+                                <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+                                <h2 style="font-weight:700;">Something went wrong</h2>
+                                <p style="margin-top:8px;">Please try refreshing the page.</p>
+                                <button onclick="location.reload()" style="display:inline-block;margin-top:20px;padding:10px 28px;border-radius:30px;background:var(--purple);color:#fff;font-weight:600;">Refresh</button>
+                            </div>
+                        `;
+                    } finally {
+                        // ** CRITICAL FIX: ALWAYS HIDE THE LOADER **
+                        if (loader) {
+                            loader.classList.add('hidden');
+                        }
+                        // Attach click events to anime cards
+                        UI.mainEl.querySelectorAll('.anime-card').forEach(el => {
                             el.addEventListener('click', function(e) {
-                                // Don't trigger if clicking on the quick watch overlay
                                 if (e.target.closest('.quick-watch')) return;
                                 const id = this.dataset.id;
                                 if (id) window.location.href = `/anime.html?id=${id}`;
                             });
                         });
-                    };
-
-                    render();
+                    }
                 }
             };
 
