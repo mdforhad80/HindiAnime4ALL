@@ -3,42 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="watch-title">Watching...</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>AetherAnime - Watching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        .player-container { aspect-ratio: 16/9; background: #000; }
+        body { background: #0b0b0f; color: white; }
+        iframe { border: none; }
+        .glass { background: rgba(18,18,24,0.9); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="bg-black text-white">
+<body class="min-h-screen">
     <div class="max-w-screen-2xl mx-auto">
-        <!-- Player -->
-        <div class="player-container relative" id="player-wrapper">
-            <iframe id="video-player" class="w-full h-full" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
+        <!-- Player Container -->
+        <div class="relative">
+            <iframe id="player" class="w-full aspect-video bg-black" allowfullscreen></iframe>
         </div>
 
-        <div class="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Episode Info + List -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-6 py-8">
+            <!-- Episode Info + Controls -->
             <div class="lg:col-span-8">
-                <h1 id="anime-title" class="text-3xl font-bold"></h1>
-                <p id="current-ep" class="text-purple-400 mt-1"></p>
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h1 id="anime-title" class="text-3xl font-bold"></h1>
+                        <p id="current-ep" class="text-purple-400 text-xl"></p>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <button onclick="prevEpisode()" class="glass px-6 py-3 rounded-2xl"><i class="fas fa-step-backward"></i></button>
+                        <button onclick="nextEpisode()" class="glass px-6 py-3 rounded-2xl"><i class="fas fa-step-forward"></i></button>
+                    </div>
+                </div>
 
-                <div class="mt-8">
+                <!-- Server & Type -->
+                <div class="glass rounded-3xl p-6 mb-8">
+                    <div class="flex gap-4">
+                        <button onclick="switchType('sub')" id="sub-btn"
+                                class="flex-1 py-4 rounded-2xl font-bold bg-purple-600">SUB</button>
+                        <button onclick="switchType('dub')" id="dub-btn"
+                                class="flex-1 py-4 rounded-2xl font-bold border border-white/30">DUB</button>
+                    </div>
+                </div>
+
+                <!-- Episode List -->
+                <div class="mt-10">
                     <h3 class="font-semibold mb-4">Episodes</h3>
-                    <div id="episode-list" class="max-h-96 overflow-auto grid grid-cols-6 gap-3 pr-4"></div>
+                    <div id="episode-list" class="max-h-96 overflow-y-auto grid grid-cols-6 gap-3 pr-4"></div>
                 </div>
             </div>
 
             <!-- Sidebar -->
             <div class="lg:col-span-4">
                 <div class="glass rounded-3xl p-6">
-                    <h3 class="font-semibold mb-4">Servers</h3>
-                    <div class="flex gap-3">
-                        <button onclick="switchType('sub')" id="sub-btn"
-                                class="flex-1 py-4 rounded-2xl bg-purple-600">SUB</button>
-                        <button onclick="switchType('dub')" id="dub-btn"
-                                class="flex-1 py-4 rounded-2xl bg-white/10">DUB</button>
-                    </div>
+                    <h3 class="text-lg font-semibold mb-4">Related Anime</h3>
+                    <div id="related-sidebar" class="space-y-6"></div>
                 </div>
             </div>
         </div>
@@ -46,41 +63,64 @@
 
     <script>
         const params = new URLSearchParams(location.search);
-        const malId = params.get('id');
+        let malId = params.get('id');
         let currentEp = parseInt(params.get('ep')) || 1;
         let currentType = params.get('type') || 'sub';
 
         async function loadWatchPage() {
             const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}`);
-            const { data } = await res.json();
+            const json = await res.json();
+            const anime = json.data;
 
-            document.getElementById('watch-title').textContent = `${data.title} - Episode ${currentEp}`;
-            document.getElementById('anime-title').textContent = data.title;
-            document.getElementById('current-ep').textContent = `Episode ${currentEp} • ${currentType.toUpperCase()}`;
+            document.getElementById('anime-title').textContent = anime.title_english || anime.title;
+            updatePlayer();
+            generateEpisodeList(anime.episodes || 24);
+        }
 
-            // Load Player
+        function updatePlayer() {
             const streamUrl = `https://megaplay.buzz/stream/mal/${malId}/${currentEp}/${currentType}`;
-            document.getElementById('video-player').src = streamUrl;
-
-            // Episode List
-            const container = document.getElementById('episode-list');
-            container.innerHTML = '';
-            for (let i = 1; i <= (data.episodes || 24); i++) {
-                const active = i === currentEp ? 'ring-2 ring-purple-500' : '';
-                const btn = document.createElement('button');
-                btn.className = `py-6 text-center rounded-2xl bg-white/5 hover:bg-white/10 transition-all ${active}`;
-                btn.textContent = i;
-                btn.onclick = () => {
-                    currentEp = i;
-                    loadWatchPage();
-                };
-                container.appendChild(btn);
-            }
+            document.getElementById('player').src = streamUrl;
+            
+            document.getElementById('current-ep').textContent = `Episode ${currentEp} • ${currentType.toUpperCase()}`;
+            
+            // Highlight active buttons
+            document.getElementById('sub-btn').classList.toggle('bg-purple-600', currentType === 'sub');
+            document.getElementById('dub-btn').classList.toggle('bg-purple-600', currentType === 'dub');
         }
 
         function switchType(type) {
             currentType = type;
-            loadWatchPage();
+            updatePlayer();
+        }
+
+        function nextEpisode() {
+            currentEp++;
+            updatePlayer();
+        }
+
+        function prevEpisode() {
+            if (currentEp > 1) {
+                currentEp--;
+                updatePlayer();
+            }
+        }
+
+        function generateEpisodeList(total) {
+            const container = document.getElementById('episode-list');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= Math.min(total, 48); i++) {
+                const active = i === currentEp ? 'ring-2 ring-purple-500' : '';
+                const div = document.createElement('div');
+                div.className = `aspect-square glass rounded-2xl flex items-center justify-center text-xl font-bold cursor-pointer hover:scale-105 transition ${active}`;
+                div.textContent = i;
+                div.onclick = () => {
+                    currentEp = i;
+                    updatePlayer();
+                    generateEpisodeList(total);
+                };
+                container.appendChild(div);
+            }
         }
 
         window.onload = loadWatchPage;
